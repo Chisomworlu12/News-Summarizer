@@ -1,7 +1,7 @@
 {
   "rewrites": [
     {
-      "source": "/guardian-api/:path*",
+      "source": "/guardian-proxy/:path*",
       "destination": "https://content.guardianapis.com/:path*"
     }
   ]
