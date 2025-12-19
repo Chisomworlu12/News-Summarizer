@@ -15,8 +15,8 @@
     "axios": "^1.13.2",
     "flowbite-react": "^0.12.14",
     "framer-motion": "^12.23.26",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
     "react-router-dom": "^7.10.1",
     "tailwindcss": "^4.1.17"
   },
