@@ -1,6 +1,6 @@
 
 
-const categories = ["general", "technology", "business", "sports", "politics", "health"];
+const categories = ["news", "technology", "business", "football", "politics", "money", "environment", "science", "health", "education", "culture", "travel"];
 function Categories({setCategory, activeCategory }) {
      
    const getActiveCategory= (category) => {

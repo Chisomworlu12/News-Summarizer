@@ -21,11 +21,12 @@ const { user,
     handleSummarize,setShowLimitModal,
     handleLogout} = useAuthAndSummary()
  
-const validArticles = articles.filter(article => article.urlToImage)
-const validHeadlines = topHeadlines.filter(article => article.urlToImage)
+const validArticles = articles.filter(article => article.fields?.thumbnail)
+const validHeadlines = topHeadlines.filter(article => article.fields?.thumbnail)
 const handleLoadMore = () => {
   setDisplayCount(prev => prev + 3) 
 }
+
 
 const hasMore = displayCount < articles.length
 
