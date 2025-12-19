@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/guardian-api/:path*",
+      "destination": "https://content.guardianapis.com/:path*"
+    }
+  ]
+}
