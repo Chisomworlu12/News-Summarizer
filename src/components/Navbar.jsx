@@ -27,6 +27,7 @@ export default function Navbar({user, handleLogout}) {
               </>
             ) : (
               <>
+               
                 <button 
                   onClick={() => navigate('/login')}
                   className="text-blue-600 hover:text-blue-700"
