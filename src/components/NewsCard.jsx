@@ -1,49 +1,80 @@
-import Button from "./Button";
 
-export default function NewsCard({ article, handleSummarize, className = "" }) {
+
+function NewsCard({ article, handleSummarize }) {
  
-  if (!article) return null;
+  const title = article.title || article.webTitle || 'No title'
+  const description = article.description || article.fields?.trailText || 'No description available'
+  const imageUrl = article.url_to_image || article.fields?.thumbnail || '/placeholder.jpg'
+  const articleUrl = article.url || article.webUrl || '#'
+  const sourceName = article.source_name || article.sectionName || 'Unknown source'
+  const publishedDate = article.published_at || article.webPublicationDate
+
+ 
+  const formatDate = (dateString) => {
+    if (!dateString) return 'Invalid Date'
+    try {
+      return new Date(dateString).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      })
+    } catch {
+      return 'Invalid Date'
+    }
+  }
 
   return (
-    <div className="bg-white rounded-lg shadow-md h-full flex flex-col overflow-hidden">
-    
-      <img
-        src={article.fields?.thumbnail || "https://via.placeholder.com/500x300?text=No+Image"}
-        alt={article.webTitle}
-        className={`w-full h-48 sm:h-56 md:h-64 object-cover ${className}`}
-      />
-      
-      <div className="p-4 flex flex-col flex-grow">
-     
-        <h3 className="text-lg sm:text-xl font-bold mb-2 line-clamp-2">
-          {article.webTitle}
+    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+  
+      <div className="relative h-48 overflow-hidden">
+        <img 
+          src={imageUrl}
+          alt={title}
+          className="w-full h-full object-cover"
+          onError={(e) => {
+            e.target.src = 'https://via.placeholder.com/400x300?text=No+Image'
+          }}
+        />
+      </div>
+
+   
+      <div className="p-4">
+        {/* Source and Date */}
+        <div className="flex justify-between items-center text-xs text-gray-500 mb-2">
+          <span className="font-semibold">{sourceName}</span>
+          <span>{formatDate(publishedDate)}</span>
+        </div>
+
+        
+        <h3 className="text-lg font-bold mb-2 line-clamp-2 hover:text-blue-600">
+          {title}
         </h3>
 
       
-        <p className="text-gray-600 text-sm mb-4">
-          <span className="font-semibold text-blue-700">{article.sectionName}</span> • {new Date(article.webPublicationDate).toLocaleDateString()}
+        <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+          {description}
         </p>
 
-     
-        <p className="text-gray-700 text-sm line-clamp-3 mb-4">
-            {article.fields?.trailText?.replace(/<[^>]*>?/gm, '')} 
-        </p>
-        
-        <div className="flex-grow"></div>
-        
-        <div className='flex flex-col sm:flex-row justify-between gap-2 sm:gap-4 mt-4'>
-           
-            <a 
-                href={article.webUrl} 
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:text-blue-800 font-medium text-center sm:text-left flex items-center"
-            >
-                Read full story →
-            </a>
-            <Button onClick={() => handleSummarize(article)}>Summarize</Button>
+        <div className="flex gap-2">
+          <a 
+            href={articleUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-center py-2 px-4 rounded-lg transition-colors duration-200 "
+          >
+            Read full story→ 
+          </a>
+          
+          <button
+            onClick={() => handleSummarize(article)}
+            className="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition-colors duration-200"
+          >
+            Summarize
+          </button>
         </div>
       </div>
     </div>
-  );
+  )
 }
+
+export default NewsCard
