@@ -33,7 +33,6 @@ export async function fetchAndStoreRSS(sources) {
 
       console.log(`✓ Found ${items.length} articles from ${source.name}`);
 
-      // Process each article (limit to 15)
       const itemsArray = Array.from(items).slice(0, 15);
 
       for (const item of itemsArray) {
