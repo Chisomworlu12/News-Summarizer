@@ -53,7 +53,7 @@ export const RSS_SOURCES = [
 // Helper function to get sources by category
 export function getSourcesByCategory(category) {
   if (category === "general") {
-    return RSS_SOURCES; // Return all for general
+    return RSS_SOURCES;
   }
   return RSS_SOURCES.filter((source) => source.category === category);
 }
