@@ -10,6 +10,7 @@ import Categories from '../components/Categories'
 import ErrorAlert from '../components/Error'
 import LoadingSpinner from '../components/Spinner'
 import Button from '../components/Button'
+import SummaryModal from '../components/SummaryModal'
 
 function NewsFeed() {
   const [displayCount, setDisplayCount] = useState(9)
@@ -30,9 +31,11 @@ function NewsFeed() {
     user,
     summaryCount,
     showLimitModal,
-    handleSummarize,
     setShowLimitModal,
-    handleLogout
+    handleSummarize,
+    handleLogout,
+    summaryModal,
+    closeSummaryModal
   } = useAuthAndSummary()
  
  
@@ -57,7 +60,7 @@ function NewsFeed() {
         <SummaryCount summaryCount={summaryCount} />
       )}
       
-      {/* Refresh Section */}
+    
       {!loading && !error && (
         <div className="max-w-6xl mx-auto px-8 pt-4">
           <div className="flex justify-between items-center mb-6 bg-white rounded-lg p-4 shadow-sm">
@@ -139,6 +142,14 @@ function NewsFeed() {
       {showLimitModal && (
         <LimitModal setShowLimitModal={setShowLimitModal} />
       )}
+
+   <SummaryModal
+        isOpen={summaryModal.isOpen}
+        onClose={closeSummaryModal}
+        summary={summaryModal.summary}
+        article={summaryModal.article}
+        isLoading={summaryModal.isLoading}
+      />
     </div>
   )
 }
