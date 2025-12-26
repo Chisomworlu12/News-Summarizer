@@ -112,7 +112,7 @@ export default function NewsProvider({ children }) {
     const interval = setInterval(() => {
       console.log('⏰ Auto-refresh triggered (1 hour elapsed)')
       refreshRSSFeeds()
-    }, 60 * 60 * 1000) // 1 hour
+    }, 60 * 60 * 1000) 
     
     return () => clearInterval(interval)
   }, [])
@@ -128,6 +128,7 @@ export default function NewsProvider({ children }) {
     isRefreshing,
     lastFetchTime
   }
+console.log(articles);
 
   return (
     <NewsContext.Provider value={value}>
