@@ -1,20 +1,56 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function HeadlineSlider({children}) {
     const [currentSlide, setCurrentSlide] = useState(0);
+    const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+  const slideCount = children.length || 4;
+
+  const timerRef = useRef(null);
 
     const nextSlide = () => {
-      setCurrentSlide((prev) => (prev + 1) % 4);
+      setCurrentSlide((prev) => (prev + 1) % slideCount);
     };
 
     const prevSlide = () => {
-      setCurrentSlide((prev) => (prev - 1 + 4) % 4);
+      setCurrentSlide((prev) => (prev - 1 + slideCount) % slideCount);
     };
 
+    useEffect(() => {
+   
+    timerRef.current = setInterval(() => {
+      nextSlide();
+    }, 5000); 
+
+   
+    return () => clearInterval(timerRef.current);
+  }, [currentSlide]);
+
+
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e) => setTouchEnd(e.targetTouches[0].clientX);
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) nextSlide();
+    if (isRightSwipe) prevSlide();
+  };
     return (
         <div className="w-full mb-4 relative">
            
-            <div className="overflow-hidden rounded-lg border-b-4 border-blue-600">
+            <div className="overflow-hidden rounded-lg border-b-4 border-blue-600" onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}>
                 
                 <div 
                   className="flex transition-transform duration-500 ease-in-out"
