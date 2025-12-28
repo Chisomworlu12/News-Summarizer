@@ -1,5 +1,7 @@
+
+
 import { useContext, useState } from 'react'
-import Navbar from '../components/Navbar'
+import Navbar from '../components/Navbar/Navbar'
 import NewsCard from '../components/NewsCard'
 import { NewsContext } from '../context/NewsContext'
 import { useAuthAndSummary } from '../hooks/useAuthAndSummary'
@@ -11,6 +13,7 @@ import ErrorAlert from '../components/Error'
 import LoadingSpinner from '../components/Spinner'
 import Button from '../components/Button'
 import SummaryModal from '../components/SummaryModal'
+
 
 function NewsFeed() {
   const [displayCount, setDisplayCount] = useState(9)
@@ -149,7 +152,9 @@ function NewsFeed() {
         summary={summaryModal.summary}
         article={summaryModal.article}
         isLoading={summaryModal.isLoading}
+        user={user}
       />
+   
     </div>
   )
 }

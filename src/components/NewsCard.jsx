@@ -39,7 +39,7 @@ function NewsCard({ article, handleSummarize }) {
 
    
       <div className="p-4">
-        {/* Source and Date */}
+       
         <div className="flex justify-between items-center text-xs text-gray-500 mb-2">
           <span className="font-semibold">{sourceName}</span>
           <span>{formatDate(publishedDate)}</span>

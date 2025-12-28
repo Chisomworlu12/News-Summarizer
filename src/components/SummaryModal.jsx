@@ -1,18 +1,33 @@
-function SummaryModal({ isOpen, onClose, summary, article, isLoading }) {
+
+import { useSavedSummary } from '../hooks/useSavedSummary';
+
+function SummaryModal({ isOpen, onClose, summary, article, isLoading, user }) {
+
+  const { saving, isSaved, saveSummary } = useSavedSummary(user, article);
+
   if (!isOpen) return null;
+
+  const handleSave = async () => {
+    const result = await saveSummary(summary);
+    if (result.error) {
+      alert(result.error);
+    }
+  };
+
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
+     
       <div
         onClick={onClose}
         className="absolute inset-0 bg-black bg-opacity-50"
       />
 
-      {/* Modal */}
-      <div className="relative bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[80vh] md:mb-10 z-10 ">
-        {/* Header */}
-        <div className="bg-blue-600 text-white p-6 rounded-t-2xl">
+     
+      <div className="relative bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col z-10">
+        
+       
+        <div className="bg-blue-600 text-white p-6 flex-shrink-0 rounded-t-lg">
           <div className="flex justify-between items-start">
             <h2 className="text-2xl font-bold pr-8">AI Summary</h2>
             <button
@@ -27,8 +42,8 @@ function SummaryModal({ isOpen, onClose, summary, article, isLoading }) {
           )}
         </div>
 
-        {/* Content */}
-        <div className="p-6 overflow-y-auto max-h-[60vh] scroll-smooth">
+        
+        <div className="p-6 overflow-y-auto flex-1">
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-12">
               <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-blue-600 mb-4"></div>
@@ -56,11 +71,20 @@ function SummaryModal({ isOpen, onClose, summary, article, isLoading }) {
           )}
         </div>
 
-        {/* Footer */}
-        <div className="bg-gray-50 px-6 py-4 border-t w-full rounded-b-2xl">
+       
+        <div className="bg-gray-50 px-6 py-4 border-t flex gap-3 rounded-b-lg flex-shrink-0">
+          {user && !isLoading && summary && (
+            <button
+              onClick={handleSave} 
+              disabled={saving || isSaved}
+              className="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors font-semibold disabled:bg-green-300"
+            >
+              {saving ? 'Saving...' : isSaved ? '✓ Saved to Profile' : 'Save Summary'}
+            </button>
+          )}
           <button
             onClick={onClose}
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+            className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors font-semibold"
           >
             Close
           </button>

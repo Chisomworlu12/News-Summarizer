@@ -17,7 +17,6 @@ function Categories({setCategory, activeCategory }) {
                     {category.charAt(0).toUpperCase() + category.slice(1)}
                 </li>
             ))}
-          
         </ul>
       </div>
     )
