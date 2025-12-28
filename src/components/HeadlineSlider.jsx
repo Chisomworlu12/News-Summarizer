@@ -1,50 +1,19 @@
-import { useEffect, useRef, useState } from "react";
+import useSlide from "../hooks/useSlide";
+
 
 function HeadlineSlider({children}) {
-    const [currentSlide, setCurrentSlide] = useState(0);
-    const [touchStart, setTouchStart] = useState(null);
-  const [touchEnd, setTouchEnd] = useState(null);
-  const slideCount = children.length || 4;
+  
+  const {currentSlide, onTouchStart, onTouchMove, onTouchEnd, nextSlide, prevSlide} = useSlide();
 
-  const timerRef = useRef(null);
-
-    const nextSlide = () => {
-      setCurrentSlide((prev) => (prev + 1) % slideCount);
-    };
-
-    const prevSlide = () => {
-      setCurrentSlide((prev) => (prev - 1 + slideCount) % slideCount);
-    };
-
-    useEffect(() => {
-   
-    timerRef.current = setInterval(() => {
-      nextSlide();
-    }, 5000); 
-
-   
-    return () => clearInterval(timerRef.current);
-  }, [currentSlide]);
-
-
-  const minSwipeDistance = 50;
-
-  const onTouchStart = (e) => {
-    setTouchEnd(null);
-    setTouchStart(e.targetTouches[0].clientX);
-  };
-
-  const onTouchMove = (e) => setTouchEnd(e.targetTouches[0].clientX);
-
-  const onTouchEnd = () => {
-    if (!touchStart || !touchEnd) return;
-    const distance = touchStart - touchEnd;
-    const isLeftSwipe = distance > minSwipeDistance;
-    const isRightSwipe = distance < -minSwipeDistance;
-
-    if (isLeftSwipe) nextSlide();
-    if (isRightSwipe) prevSlide();
-  };
+  function onSetCurrentSlide(i) {
+    while (currentSlide !== i) {
+      if (currentSlide < i) {
+        nextSlide();
+      } else {
+        prevSlide();
+      }
+  }
+}
     return (
         <div className="w-full mb-4 relative">
            
@@ -82,14 +51,14 @@ function HeadlineSlider({children}) {
 
            
             <div className="flex justify-center gap-2 py-4">
-              {[0, 1, 2, 3].map((index) => (
+              {[0, 1, 2, 3].map((i) => (
                 <button
-                  key={index}
-                  onClick={() => setCurrentSlide(index)}
+                  key={i}
+                  onClick={onSetCurrentSlide.bind(null, i)}
                   className={`h-2 rounded-full transition-all ${
-                    currentSlide === index ? 'bg-blue-600 w-8' : 'bg-gray-400 w-2'
+                    currentSlide === i ? 'bg-blue-600 w-8' : 'bg-gray-400 w-2'
                   }`}
-                  aria-label={`Go to slide ${index + 1}`}
+                  aria-label={`Go to slide ${i + 1}`}
                 />
               ))}
             </div>

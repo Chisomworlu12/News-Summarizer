@@ -1,38 +1,33 @@
 import { supabase } from "../lib/supabase";
-// CORS proxy to fetch RSS feeds
-const CORS_PROXY = "https://api.allorigins.win/get?url=";
 
-/**
- * Fetches articles from RSS feeds and stores them in Supabase
- */
+// SWITCHED PROXY: allorigins is currently unstable (502 error).
+// corsproxy.io is a more reliable alternative for RSS feeds.
+const CORS_PROXY = "https://corsproxy.io/?";
+
 export async function fetchAndStoreRSS(sources) {
   console.log(`🚀 Starting RSS fetch from ${sources.length} sources...`);
 
-  const results = {
-    success: 0,
-    failed: 0,
-    duplicates: 0,
-    articles: [],
-  };
+  const results = { success: 0, failed: 0, duplicates: 0, articles: [] };
 
   for (const source of sources) {
     try {
       console.log(`📡 Fetching from ${source.name}...`);
 
-      // Fetch RSS through CORS proxy
-      const response = await fetch(CORS_PROXY + encodeURIComponent(source.url));
-      const data = await response.json();
-      const xmlText = data.contents;
+      // FIX: Improved fetch logic with error handling for the proxy
+      const response = await fetch(
+        `${CORS_PROXY}${encodeURIComponent(source.url)}`
+      );
 
-      // Parse XML manually
+      if (!response.ok)
+        throw new Error(`Proxy returned status ${response.status}`);
+
+      const xmlText = await response.text(); // corsproxy.io returns text directly
+
       const parser = new DOMParser();
       const xmlDoc = parser.parseFromString(xmlText, "text/xml");
-
-      // Get all items from RSS feed
       const items = xmlDoc.querySelectorAll("item");
 
       console.log(`✓ Found ${items.length} articles from ${source.name}`);
-
       const itemsArray = Array.from(items).slice(0, 15);
 
       for (const item of itemsArray) {
@@ -47,63 +42,43 @@ export async function fetchAndStoreRSS(sources) {
           published_at: parseDate(getTextContent(item, "pubDate")),
           source_name: source.name,
           category: source.category,
+          // user_id: (await supabase.auth.getUser()).data.user?.id // ADD THIS if your RLS uses auth.uid()
         };
 
-        // Validate
-        if (!article.title || !article.url) {
-          console.log(`⚠️ Skipping invalid article`);
-          results.failed++;
-          continue;
-        }
+        if (!article.title || !article.url) continue;
 
-        // Insert into database
+        // FIX: Ensure your RLS has BOTH "Insert" and "Update" policies for authenticated users
         const { data, error } = await supabase
           .from("articles")
           .upsert(article, {
-            onConflict: "url",
-            ignoreDuplicates: false,
+            onConflict: "url", // Ensure 'url' column is marked as UNIQUE in Supabase
           })
           .select();
 
         if (error) {
-          if (error.code === "23505") {
-            results.duplicates++;
-          } else {
-            console.error(`❌ Error storing article: ${error.message}`);
-            results.failed++;
-          }
+          console.error(`❌ Supabase Error (${error.code}): ${error.message}`);
+          results.failed++;
         } else {
           results.success++;
-          results.articles.push(article);
+          if (data) results.articles.push(data[0]);
         }
       }
-
-      // Small delay
       await sleep(1000);
     } catch (error) {
       console.error(`❌ Error fetching ${source.name}:`, error.message);
+      results.failed++;
     }
   }
-
-  console.log(`
-    ✅ RSS Fetch Complete!
-    📊 Success: ${results.success}
-    🔄 Duplicates: ${results.duplicates}
-    ❌ Failed: ${results.failed}
-  `);
-
   return results;
 }
 
-// Helper: Get text content from XML element
+// Helper functions
 function getTextContent(item, tagName) {
   const element = item.querySelector(tagName);
   return element ? element.textContent : null;
 }
 
-// Helper: Get content:encoded (special handling for namespaced tags)
 function getContentEncoded(item) {
-  // Try different namespace variations
   let element = item.getElementsByTagName("content:encoded")[0];
   if (!element) {
     element = item.getElementsByTagNameNS(
@@ -117,36 +92,30 @@ function getContentEncoded(item) {
   return element ? element.textContent : null;
 }
 
-// Helper: Extract image from RSS item
 function extractImageFromItem(item) {
-  // Method 1: Try enclosure
   const enclosure = item.querySelector("enclosure");
   if (enclosure && enclosure.getAttribute("type")?.includes("image")) {
     return enclosure.getAttribute("url");
   }
 
-  // Method 2: Try media:content using getElementsByTagName
   const mediaContent = item.getElementsByTagName("media:content")[0];
   if (mediaContent) {
     const url = mediaContent.getAttribute("url");
     if (url) return url;
   }
 
-  // Method 3: Try media:thumbnail
   const mediaThumbnail = item.getElementsByTagName("media:thumbnail")[0];
   if (mediaThumbnail) {
     const url = mediaThumbnail.getAttribute("url");
     if (url) return url;
   }
 
-  // Method 4: Extract from description HTML
   const description = getTextContent(item, "description");
   if (description) {
     const imgMatch = description.match(/<img[^>]+src=["']([^"'>]+)["']/i);
     if (imgMatch) return imgMatch[1];
   }
 
-  // Method 5: Extract from content:encoded
   const content = getContentEncoded(item);
   if (content) {
     const imgMatch = content.match(/<img[^>]+src=["']([^"'>]+)["']/i);
@@ -156,10 +125,8 @@ function extractImageFromItem(item) {
   return null;
 }
 
-// Helper: Parse date
 function parseDate(dateString) {
   if (!dateString) return new Date().toISOString();
-
   try {
     return new Date(dateString).toISOString();
   } catch {
@@ -167,10 +134,8 @@ function parseDate(dateString) {
   }
 }
 
-// Helper: Clean text
 function cleanText(text) {
   if (!text) return "";
-
   return text
     .replace(/<[^>]*>/g, "")
     .replace(/&nbsp;/g, " ")
@@ -183,7 +148,6 @@ function cleanText(text) {
     .trim();
 }
 
-// Helper: Sleep
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -232,22 +196,5 @@ export async function getTopHeadlines(limit = 10) {
   }
 
   console.log(`✓ Found ${data.length} headlines`);
-  return data;
-}
-
-// Search articles
-export async function searchArticles(keyword, limit = 20) {
-  const { data, error } = await supabase
-    .from("articles")
-    .select("*")
-    .or(`title.ilike.%${keyword}%,description.ilike.%${keyword}%`)
-    .order("published_at", { ascending: false })
-    .limit(limit);
-
-  if (error) {
-    console.error("❌ Error searching articles:", error);
-    return [];
-  }
-
   return data;
 }

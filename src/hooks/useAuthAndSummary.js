@@ -58,13 +58,13 @@ export function useAuthAndSummary() {
   }, [])
 
   const handleSummarize = async (article) => {
-    // Check limit for non-logged-in users
+    
   if (!user && summaryCount >= 5) {
       dispatch({type: 'SET_SHOW_LIMIT_MODAL', payload: true})
       return
     }
 
-    // Open modal with loading state
+    
     dispatch({
       type: 'SET_SUMMARY_MODAL',
       payload: {
@@ -76,10 +76,10 @@ export function useAuthAndSummary() {
     })
 
     try {
-      // Call Gemini API
+      
       const summary = await summarizeArticle(article)
       
-      // Update modal with summary
+     
       dispatch({
         type: 'SET_SUMMARY_MODAL',
         payload: {
@@ -90,7 +90,7 @@ export function useAuthAndSummary() {
         }
       })
 
-      // Increment count for non-logged-in users
+    
       if (!user) {
         dispatch({type: 'INCREMENT_SUMMARY'})
       }
@@ -98,7 +98,7 @@ export function useAuthAndSummary() {
     } catch (error) {
       console.error('Error generating summary:', error)
       
-      // Show error in modal
+      
       dispatch({
         type: 'SET_SUMMARY_MODAL',
         payload: {
