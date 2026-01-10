@@ -1,10 +1,8 @@
-
-
-import { useContext, useState } from 'react'
+import {  useContext, useState } from 'react'
 import Navbar from '../components/Navbar/Navbar'
 import NewsCard from '../components/NewsCard'
 import { NewsContext } from '../context/NewsContext'
-import { useAuthAndSummary } from '../hooks/useAuthAndSummary'
+import { useSummary } from '../hooks/useSummary'
 import LimitModal from '../components/LimitModal'
 import SummaryCount from '../components/SummaryCount'
 import HeadlineSlider from '../components/HeadlineSlider'
@@ -13,6 +11,7 @@ import ErrorAlert from '../components/Error'
 import LoadingSpinner from '../components/Spinner'
 import Button from '../components/Button'
 import SummaryModal from '../components/SummaryModal'
+import { useAuth } from '../context/AuthContext'
 
 
 function NewsFeed() {
@@ -31,17 +30,15 @@ function NewsFeed() {
   } = useContext(NewsContext)
   
   const { 
-    user,
     summaryCount,
     showLimitModal,
     setShowLimitModal,
     handleSummarize,
-    handleLogout,
     summaryModal,
     closeSummaryModal
-  } = useAuthAndSummary()
+  } = useSummary()
  
- 
+ const { user, handleLogout } = useAuth()
   const validArticles = articles.filter(article => 
     article.url_to_image || article.fields?.thumbnail
   )

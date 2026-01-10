@@ -7,13 +7,19 @@ export function useSummaries(user) {
   const [error, setError] = useState(null);
 
   const fetchSummaries = useCallback(async () => {
-    if (!user) return;
+    // 1. Safety check: Ensure user and user.id exist
+    if (!user?.id) {
+      setSummaries([]);
+      setLoading(false);
+      return;
+    }
 
     setLoading(true);
     try {
       const { data, error: dbError } = await supabase
         .from("summaries")
         .select("*")
+        .eq("user_id", user.id)
         .order("saved_at", { ascending: false });
 
       if (dbError) throw dbError;
@@ -23,14 +29,15 @@ export function useSummaries(user) {
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [user?.id]);
 
   const deleteSummary = async (id) => {
     try {
       const { error: dbError } = await supabase
         .from("summaries")
         .delete()
-        .eq("id", id);
+        .eq("id", id)
+        .eq("user_id", user.id);
 
       if (dbError) throw dbError;
 
