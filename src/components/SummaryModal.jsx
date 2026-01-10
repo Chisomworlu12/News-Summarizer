@@ -1,8 +1,7 @@
-
 import { useSavedSummary } from '../hooks/useSavedSummary';
+import { Bookmark, Check, ExternalLink, X } from 'lucide-react'; 
 
 function SummaryModal({ isOpen, onClose, summary, article, isLoading, user }) {
-
   const { saving, isSaved, saveSummary } = useSavedSummary(user, article);
 
   if (!isOpen) return null;
@@ -10,81 +9,110 @@ function SummaryModal({ isOpen, onClose, summary, article, isLoading, user }) {
   const handleSave = async () => {
     const result = await saveSummary(summary);
     if (result.error) {
-      alert(result.error);
+      
+      console.error(result.error);
     }
   };
 
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-     
-      <div
-        onClick={onClose}
-        className="absolute inset-0 bg-black bg-opacity-50"
-      />
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/15 backdrop-blur-sm">
+      
+      <div onClick={onClose} className="absolute inset-0" />
 
-     
-      <div className="relative bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col z-10">
+      
+      <div className="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] flex flex-col z-10 overflow-hidden">
         
-       
-        <div className="bg-blue-600 text-white p-6 flex-shrink-0 rounded-t-lg">
+      
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-6">
           <div className="flex justify-between items-start">
-            <h2 className="text-2xl font-bold pr-8">AI Summary</h2>
+            <div>
+              <h2 className="text-2xl font-bold flex items-center gap-2">
+                <span className="bg-white/20 p-1.5 rounded-lg">✨</span>
+                AI Summary
+              </h2>
+            </div>
             <button
               onClick={onClose}
-              className="text-white hover:text-gray-200 text-3xl leading-none"
+              className="p-1 hover:bg-white/20 rounded-full transition-colors"
             >
-              ×
+              <X size={28} />
             </button>
           </div>
           {article && (
-            <p className="text-blue-100 text-sm mt-2 line-clamp-2">{article.title}</p>
+            <p className="text-blue-100 text-sm mt-3 line-clamp-2 font-medium italic">
+              "{article.title}"
+            </p>
           )}
         </div>
 
         
-        <div className="p-6 overflow-y-auto flex-1">
+        <div className="p-8 overflow-y-auto flex-1">
           {isLoading ? (
-            <div className="flex flex-col items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-blue-600 mb-4"></div>
-              <p className="text-gray-600">Generating AI summary...</p>
+            <div className="flex flex-col items-center justify-center py-16">
+              <div className="relative">
+                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600"></div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                   <div className="h-8 w-8 bg-blue-100 rounded-full"></div>
+                </div>
+              </div>
+              <p className="text-gray-500 mt-6 font-medium animate-pulse">Analyzing article content...</p>
             </div>
           ) : (
-            <div>
-              <div className="bg-blue-50 border-l-4 border-blue-600 p-4 mb-4">
-                <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+            <div className="space-y-6">
+              <div className="bg-gray-50 rounded-xl p-6 border border-gray-100 shadow-inner">
+                <p className="text-gray-800 leading-relaxed whitespace-pre-line text-lg">
                   {summary}
                 </p>
               </div>
 
               {article?.url && (
-                
-                 <a href={article.url}
+                <a 
+                  href={article.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold"
+                  className="inline-flex items-center gap-2 text-blue-600 hover:text-indigo-700 font-bold transition-colors group"
                 >
-                  Read full article →
+                  Read full story 
+                  <ExternalLink size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                 </a>
               )}
             </div>
           )}
         </div>
 
-       
-        <div className="bg-gray-50 px-6 py-4 border-t flex gap-3 rounded-b-lg flex-shrink-0">
+        
+        <div className="bg-gray-50 px-6 py-5 border-t flex flex-col sm:flex-row gap-3">
+         
           {user && !isLoading && summary && (
             <button
               onClick={handleSave} 
               disabled={saving || isSaved}
-              className="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors font-semibold disabled:bg-green-300"
+              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl transition-all font-bold shadow-sm
+                ${isSaved 
+                  ? 'bg-green-100 text-green-700 cursor-default' 
+                  : 'bg-green-600 text-white hover:bg-green-700 active:scale-95 disabled:opacity-70'
+                }`}
             >
-              {saving ? 'Saving...' : isSaved ? '✓ Saved to Profile' : 'Save Summary'}
+              {saving ? (
+                'Saving...'
+              ) : isSaved ? (
+                <><Check size={20} /> Saved to Profile</>
+              ) : (
+                <><Bookmark size={20} /> Save Summary</>
+              )}
             </button>
           )}
+
+          
+          {!user && !isLoading && (
+            <p className="text-xs text-center text-gray-500 sm:w-2/3 mx-auto">
+              Want to keep this? <span className="text-blue-600 font-bold">Sign up</span> to save summaries to your profile.
+            </p>
+          )}
+
           <button
             onClick={onClose}
-            className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+            className="flex-1 bg-gray-200 text-gray-800 py-3 rounded-xl hover:bg-gray-300 transition-all font-bold"
           >
             Close
           </button>

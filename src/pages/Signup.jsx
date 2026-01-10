@@ -1,40 +1,59 @@
 import { useState } from "react";
-import { supabase } from "../lib/supabase";
+
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
   const navigate = useNavigate();
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const { signUp, signInWithGoogle } = useAuth();
 
-    // Call Supabase to login
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
-    });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    const { data, error } = await signUp({ email, password });
 
     if (error) {
-      setMessage("Error: " + error.message);
+      setError(error.message);
+      setLoading(false);
     } else {
-      navigate("/");
-      console.log("Logged in user:", data.user);
+      // Check if email confirmation is required
+      if (data?.user?.identities?.length === 0) {
+        setError('User already exists');
+      } else {
+        navigate('/login');
+      }
+      setLoading(false);
     }
-   
   };
+
+const handleGoogleSignUp = async () => {
+    setLoading(true);
+    setError('');
+    const { error } = await signInWithGoogle();
+    if (error) {
+      setError(error.message);
+      setLoading(false);
+    }
+  };
+  
   // Checkbox state
  const handleSingleCheckbox = (e) => {
       setAgreeToTerms(e.target.checked);
     };
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+    <div className="min-h-screen  m-10 flex items-center justify-center">
       <div className="bg-white p-4 rounded-lg shadow-md w-96 my-2">
         <div className="text-center mb-4">
           <h1 className="text-2xl font-bold mb-2">
@@ -44,7 +63,7 @@ function Signup() {
             Get your daily news in seconds.
           </p>
 
-          <div className="flex gap-5 justify-center mb-4">
+          <div onClick={handleGoogleSignUp} className="flex gap-5 justify-center mb-4">
             <div className="inline-block min-w-[150px] max-w-[180px] border border-gray-300 py-2 px-4 rounded-md cursor-pointer text-center hover:bg-gray-50 transition-colors">
               <p className="flex items-center justify-center gap-2">
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -56,23 +75,17 @@ function Signup() {
                 <strong>Google</strong>
               </p>
             </div>
-            <div className="inline-block min-w-[150px] max-w-[180px] border border-gray-300 py-2 px-4 rounded-md cursor-pointer text-center hover:bg-gray-50 transition-colors">
-              <p className="flex items-center justify-center gap-2">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M14.94 5.19c-.07.17-1.75 4.27-5.16 8.47-.26.32-.51.59-.74.82a5.76 5.76 0 01-1.35.94c-.24.11-.47.19-.7.25-.22.06-.43.09-.63.09-.19 0-.39-.03-.6-.09a3.5 3.5 0 01-.71-.26 5.82 5.82 0 01-1.36-.95c-.23-.23-.48-.5-.73-.81C-.97 9.41-2.64 5.32-2.71 5.15c-.17-.41-.26-.85-.26-1.3 0-1.93 1.57-3.5 3.5-3.5.97 0 1.84.39 2.47 1.03L9 7.38l6-6c.63-.64 1.51-1.03 2.47-1.03 1.93 0 3.5 1.57 3.5 3.5 0 .45-.09.88-.26 1.28-.07.18-1.75 4.27-5.16 8.47-.26.32-.51.59-.74.82-.38.38-.83.69-1.35.94-.24.11-.47.19-.7.25-.22.06-.43.09-.63.09-.19 0-.39-.03-.6-.09a3.5 3.5 0 01-.71-.26 5.82 5.82 0 01-1.36-.95c-.23-.23-.48-.5-.73-.81z" fill="currentColor"/>
-                </svg>
-                <strong>Apple</strong>
-              </p>
-            </div>
+           
           </div>
 
           <div className="flex items-center text-center my-5 text-gray-600">
             <div className="flex-1 border-b border-gray-300"></div>
-            <span className="px-4 text-xs">OR LOGIN WITH EMAIL</span>
+            <span className="px-4 text-xs">OR SIGNUP WITH EMAIL</span>
             <div className="flex-1 border-b border-gray-300"></div>
           </div>
         </div>
-
+       
+       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Email Address
@@ -151,11 +164,13 @@ function Signup() {
           </p>
         </div>
         <button
-          onClick={handleLogin}
+         type="sumbit"
+          disabled={loading}
           className="bg-linear-to-br from-indigo-500 to-purple-600 text-white border-none py-3.5 px-8 rounded-lg text-base font-semibold cursor-pointer transition-all duration-200 w-full hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-300 mb-4"
         >
-          Log In
+         {loading ? 'Loading...' : 'Sign Up'}
         </button>
+       </form>
 
         <button
           onClick={() => navigate("/")}
@@ -166,20 +181,20 @@ function Signup() {
 
         <p className="text-center mt-2 text-sm text-gray-600">
           Already have an account?
-          <a href="/login" className="text-blue-500">
+          <a onClick={() => navigate('/login')} className="text-blue-500">
             Log in
           </a>
         </p>
 
-        {message && (
+        {error && (
           <div
             className={`mt-4 p-3 rounded text-center text-sm ${
-              message.includes("Error")
+              error.includes("Error")
                 ? "bg-red-50 text-red-600"
                 : "bg-green-50 text-green-600"
             }`}
           >
-            {message}
+            {error}
           </div>
         )}
       </div>
