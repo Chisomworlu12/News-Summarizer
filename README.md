@@ -166,7 +166,8 @@ Implementing a strict `signUp` to `signOut` flow taught me how to balance "out-o
 
 ## 💻 Credits & Acknowledgments
 
-- **Frontend Development**: A special thanks to **@Irene-Munyewu** for programming the **Login** and **Signup** pages, translating the design into clean, functional code.
+- **Frontend Development**: A special thanks to **[@Irene-Munyewu](https://github.com/Irene-Munyewu)
+  ** for programming the **Login** and **Signup** pages, translating the design into clean, functional code.
 
 ## 👤 Author
 
