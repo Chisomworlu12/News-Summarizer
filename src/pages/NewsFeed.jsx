@@ -43,7 +43,6 @@ function NewsFeed() {
 
   const { user, handleLogout } = useAuth()
 
-  
   const validArticles = articles.filter(article => 
     article.url_to_image || article.fields?.thumbnail
   )
@@ -60,7 +59,6 @@ function NewsFeed() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900 dark:text-white transition-colors duration-300">
       <Navbar user={user} handleLogout={handleLogout} />
-      
       
       {!user && summaryCount > 0 && (
         <div className="z-20">
@@ -89,15 +87,17 @@ function NewsFeed() {
 
         {error && <div className="max-w-6xl mx-auto px-8"><ErrorAlert error={error} /></div>}
         
-      
+       
         <div className={`max-w-6xl mx-auto px-8 pb-12 transition-all duration-300 ${loading ? 'opacity-40 pointer-events-none' : 'opacity-100'}`}>
           
           <Categories setCategory={setCategory} activeCategory={category} />
           
          
-          {!loading && validArticles.length === 0 ? (
+          {!loading && validArticles.length === 0 && searchTerm !== '' ? (
             <div className="flex flex-col items-center justify-center py-24 text-center">
-              <div className="text-7xl mb-4"><SearchX size={100} /></div>
+              <div className="text-7xl mb-4 text-gray-300 dark:text-gray-600">
+                <SearchX size={100} strokeWidth={1} />
+              </div>
               <h2 className="text-2xl font-bold">No articles found</h2>
               <p className="text-gray-500 dark:text-gray-400 mt-2 mb-6">
                 We couldn't find matches for "{searchTerm}"
@@ -105,8 +105,8 @@ function NewsFeed() {
               <Button onClick={() => setSearchTerm('')} variant="outline">Clear Search</Button>
             </div>
           ) : (
-         
             <>
+              
               {!searchTerm && validHeadlines.length > 0 && (
                 <div className="mb-12">
                   <h2 className="text-2xl font-bold mb-6">Top Headlines</h2>
