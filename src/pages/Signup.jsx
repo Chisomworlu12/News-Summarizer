@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
@@ -7,38 +6,61 @@ import { useAuth } from "../context/AuthContext";
 function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [agreeToTerms, setAgreeToTerms] = useState(false);
+  
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({}); 
   const [loading, setLoading] = useState(false);
-  const { signUp, signInWithGoogle } = useAuth();
-
+  
+  const navigate = useNavigate();
+  const { signUp, signInWithGoogle, signOut } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setFieldErrors({}); 
+    
+    let errors = {};
+
+    
+    if (password !== confirmPassword) {
+      errors.password = "Passwords do not match";
+    }
+
+   
+    if (!agreeToTerms) {
+      errors.checkbox = "You must agree to the terms";
+    }
+
+   
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      return;
+    }
+
     setLoading(true);
+    const { data, error: apiError } = await signUp({ email, password });
 
-    const { data, error } = await signUp({ email, password });
-
-    if (error) {
-      setError(error.message);
+    if (apiError) {
+      setError(apiError.message);
       setLoading(false);
     } else {
-     
       if (data?.user?.identities?.length === 0) {
         setError('User already exists');
+        setLoading(false);
       } else {
-        navigate('/login');
+        await signOut(); // Prevent auto-login
+        setError('Account created! Redirecting to login...');
+        setTimeout(() => navigate('/login'), 2000);
       }
-      setLoading(false);
     }
   };
 
-const handleGoogleSignUp = async () => {
+  const handleGoogleSignUp = async () => {
     setLoading(true);
     setError('');
     const { error } = await signInWithGoogle();
@@ -47,11 +69,7 @@ const handleGoogleSignUp = async () => {
       setLoading(false);
     }
   };
-  
-  // Checkbox state
- const handleSingleCheckbox = (e) => {
-      setAgreeToTerms(e.target.checked);
-    };
+
   return (
     <div className="min-h-screen dark:bg-gray-800 flex items-center justify-center">
       <div className="bg-white dark:bg-gray-700 p-4 rounded-lg shadow-md w-96 my-2">
@@ -75,7 +93,6 @@ const handleGoogleSignUp = async () => {
                 <strong>Google</strong>
               </p>
             </div>
-           
           </div>
 
           <div className="flex items-center text-center my-5 text-gray-600">
@@ -84,51 +101,53 @@ const handleGoogleSignUp = async () => {
             <div className="flex-1 border-b border-gray-300"></div>
           </div>
         </div>
-       
-       <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
-            Email Address
-          </label>
-          <input
-            type="email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full py-3 px-4 border border-gray-300 rounded-md text-sm dark:text-gray-300 transition-colors focus:outline-none focus:border-indigo-500"
-          />
-
-          <label className="block text-sm font-medium text-gray-700 dark:text-gra7-300vmb-2 mt-4">
-            Password
-          </label>
-          <div className="relative">
+        
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
+              Email Address
+            </label>
             <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full py-3 px-4 border border-gray-300 rounded-md text-sm dark:text-gray-300  transition-colors focus:outline-none focus:border-indigo-500"
+              required
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full py-3 px-4 border border-gray-300 rounded-md text-sm dark:text-gray-300 transition-colors focus:outline-none focus:border-indigo-500"
             />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-300cursor-pointer hover:text-gray-600"
-            >
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
-          </div>
-            <p className="text-left mt-2 text-sm text-gray-600 dark:text-gray-300">
-              Must be at least 8 characters.
-            </p>
-          <div>
+
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 mt-4">
+              Password
+            </label>
+            <div className="relative">
+              <input
+                required
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full py-3 px-4 border border-gray-300 rounded-md text-sm dark:text-gray-300 transition-colors focus:outline-none focus:border-indigo-500"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-300 cursor-pointer hover:text-gray-600"
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
+
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 mt-4">
               Confirm Password
             </label>
             <div className="relative">
               <input
+                required
                 type={showConfirmPassword ? "text" : "password"}
                 placeholder="Confirm your password"
-                className="w-full py-3 px-4 border border-gray-300 rounded-md text-sm dark:text-gray-300 transition-colors focus:outline-none focus:border-indigo-500"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className={`w-full py-3 px-4 border rounded-md text-sm dark:text-gray-300 transition-colors focus:outline-none ${fieldErrors.password ? 'border-red-500' : 'border-gray-300 focus:border-indigo-500'}`}
               />
               <button
                 type="button"
@@ -138,39 +157,45 @@ const handleGoogleSignUp = async () => {
                 {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
+            
+            {fieldErrors.password && (
+              <p className="text-red-500 text-xs mt-1">{fieldErrors.password}</p>
+            )}
+            <p className="text-left mt-2 text-sm text-gray-600 dark:text-gray-300">
+              Must be at least 8 characters.
+            </p>
           </div>
-        </div>
-        <div className="checkbox-group flex mb-4">
-          <label >
-            <input
-              type="checkbox"
-              className="mr-2"
-              checked={agreeToTerms}
-              onChange={handleSingleCheckbox}
-            />
-          </label>
-          <p className="text-sm text-gray-600 dark:text-gray-300">
-            By creating an account, you agree to our
-            <a href="#" className="text-indigo-500 hover:text-indigo-700">
-             
-              Terms of Service
-            </a>
-            and
-            <a href="#" className="text-indigo-500 hover:text-indigo-700">
-              
-              Privacy Policy
-            </a>
-            .
-          </p>
-        </div>
-        <button
-         type="sumbit"
-          disabled={loading}
-          className="bg-gradient-to-br from-indigo-500 to-purple-600 dark:from-indigo-500 dark:to-purple-600 text-white border-none py-3.5 px-8 rounded-lg text-base font-semibold cursor-pointer transition-all duration-200 w-full hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-300 dark:hover:shadow-indigo-800 mb-4 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-         {loading ? 'Loading...' : 'Sign Up'}
-        </button>
-       </form>
+
+          <div className="mb-4">
+            <div className="checkbox-group flex">
+              <label>
+                <input
+                  type="checkbox"
+                  className="mr-2"
+                  checked={agreeToTerms}
+                  onChange={(e) => setAgreeToTerms(e.target.checked)}
+                />
+              </label>
+              <p className="text-sm text-gray-600 dark:text-gray-300">
+                By creating an account, you agree to our{" "}
+                <a href="#" className="text-indigo-500 hover:text-indigo-700">Terms of Service</a> and{" "}
+                <a href="#" className="text-indigo-500 hover:text-indigo-700">Privacy Policy</a>.
+              </p>
+            </div>
+            
+            {fieldErrors.checkbox && (
+              <p className="text-red-500 text-xs mt-1 ml-6">{fieldErrors.checkbox}</p>
+            )}
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="bg-gradient-to-br from-indigo-500 to-purple-600 dark:from-indigo-500 dark:to-purple-600 text-white border-none py-3.5 px-8 rounded-lg text-base font-semibold cursor-pointer transition-all duration-200 w-full hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-300 dark:hover:shadow-indigo-800 mb-4 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? 'Loading...' : 'Sign Up'}
+          </button>
+        </form>
 
         <button
           onClick={() => navigate("/")}
@@ -180,20 +205,14 @@ const handleGoogleSignUp = async () => {
         </button>
 
         <p className="text-center mt-2 text-sm text-gray-600 dark:text-gray-300">
-          Already have an account?
-          <a onClick={() => navigate('/login')} className="text-blue-500">
+          Already have an account?{" "}
+          <a onClick={() => navigate('/login')} className="text-blue-500 cursor-pointer">
             Log in
           </a>
         </p>
 
         {error && (
-          <div
-            className={`mt-4 p-3 rounded text-center text-sm ${
-              error.includes("Error")
-                ? "bg-red-50 text-red-600"
-                : "bg-green-50 text-green-600"
-            }`}
-          >
+          <div className={`mt-4 p-3 rounded text-center text-sm ${error.includes("Redirecting") ? "bg-green-50 text-green-600" : "bg-red-50 text-red-600"}`}>
             {error}
           </div>
         )}
