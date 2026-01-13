@@ -32,7 +32,7 @@ Content production is often distorted by advertising models rather than user nee
 
 ### 🎯 Story 1: Instant Information Digest
 
-**As a** busy professional, **I want** to read a 3-sentence summary of long news articles **so that** I can stay informed without spending hours reading full reports.
+**As a** busy professional, **I want** a short, straight to the point summary of long news articles so that I can quickly understand the main facts without reading unnecessary details.
 
 - **Solution:** Integrated an AI-powered summarization engine that distills complex reports into digestible bullet points.
 
@@ -174,6 +174,14 @@ Implementing a strict `signUp` to `signOut` flow taught me how to balance "out-o
 
 - **Frontend Development**: A special thanks to **[@Irene-Munyewu](https://github.com/Irene-Munyewu)
   ** for programming the **Login** and **Signup** pages, translating the design into clean, functional code.
+
+## 🛠️ Tech Stack Used
+
+- **Frontend:** React, Tailwind CSS, Vite
+- **Backend/Database:** Supabase (PostgreSQL)
+- **AI Engine:** Google Gemini AI
+- **State/Auth:** React Context API
+- **Deployment:** Vercel
 
 ## 👤 Author
 
