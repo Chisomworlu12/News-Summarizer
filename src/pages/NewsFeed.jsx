@@ -1,4 +1,4 @@
-import {  useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import Navbar from '../components/Navbar/Navbar'
 import NewsCard from '../components/NewsCard'
 import { NewsContext } from '../context/NewsContext'
@@ -13,7 +13,7 @@ import Button from '../components/Button'
 import SummaryModal from '../components/SummaryModal'
 import { useAuth } from '../context/AuthContext'
 import Footer from '../components/Footer'
-
+import { SearchX } from 'lucide-react'
 
 function NewsFeed() {
   const [displayCount, setDisplayCount] = useState(9)
@@ -27,7 +27,9 @@ function NewsFeed() {
     error,
     refreshRSSFeeds,
     isRefreshing,
-    lastFetchTime
+    lastFetchTime,
+    searchTerm,
+    setSearchTerm
   } = useContext(NewsContext)
   
   const { 
@@ -38,8 +40,10 @@ function NewsFeed() {
     summaryModal,
     closeSummaryModal
   } = useSummary()
- 
- const { user, handleLogout } = useAuth()
+
+  const { user, handleLogout } = useAuth()
+
+  
   const validArticles = articles.filter(article => 
     article.url_to_image || article.fields?.thumbnail
   )
@@ -51,100 +55,107 @@ function NewsFeed() {
     setDisplayCount(prev => prev + 3) 
   }
 
-  const hasMore = displayCount < articles.length
+  const hasMore = displayCount < validArticles.length
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 dark:text-white">
+    <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900 dark:text-white transition-colors duration-300">
       <Navbar user={user} handleLogout={handleLogout} />
-     
-      {!user && summaryCount > 0 && (
-        <SummaryCount summaryCount={summaryCount} />
-      )}
       
-    
-      {!loading && !error && (
-        <div className="max-w-6xl mx-auto px-8 pt-4">
-          <div className="flex justify-between items-center mb-6 bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm">
-            <div className="text-sm text-gray-600 dark:text-gray-300">
-              {lastFetchTime ? (
-                <>
-                  Last updated: <span className="font-semibold">{new Date(lastFetchTime).toLocaleTimeString()}</span>
-                </>
-              ) : (
-                'Loading news...'
-              )}
-            </div>
-            <Button 
-              onClick={refreshRSSFeeds} 
-              disabled={isRefreshing}
-              className="flex items-center gap-2"
-            >
-              {isRefreshing ? (
-                <>
-                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
-                  </svg>
-                  Updating...
-                </>
-              ) : (
-                <>🔄 Updated News</>
-              )}
-            </Button>
-          </div>
+      
+      {!user && summaryCount > 0 && (
+        <div className="z-20">
+          <SummaryCount summaryCount={summaryCount} />
         </div>
       )}
       
-      {loading && <LoadingSpinner />}
-      {error && <ErrorAlert error={error} />}
+      <main className="flex-grow relative">
+        
+        
+        {loading && (
+          <div className="absolute top-0 left-0 w-full z-10 flex justify-center -mt-2">
+             <div className="bg-blue-600 text-white px-4 py-1 rounded-full text-xs font-bold animate-pulse shadow-lg border border-blue-400">
+                SEARCHING...
+             </div>
+          </div>
+        )}
+
+        
+        {!error && (
+          <div className="max-w-6xl mx-auto px-8 pt-4">
+            <div className="flex justify-between items-center mb-6 bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border dark:border-gray-700">
+              <div className="text-sm text-gray-600 dark:text-gray-300">
+                {lastFetchTime ? (
+                  <>Last updated: <span className="font-semibold">{new Date(lastFetchTime).toLocaleTimeString()}</span></>
+                ) : (
+                  'Syncing feeds...'
+                )}
+              </div>
+              <Button onClick={refreshRSSFeeds} disabled={isRefreshing} className="flex items-center gap-2">
+                {isRefreshing ? 'Updating...' : '🔄 Refresh'}
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {error && <div className="max-w-6xl mx-auto px-8"><ErrorAlert error={error} /></div>}
+        
       
-      {!loading && !error && (
-        <div className="max-w-6xl mx-auto p-8">
+        <div className={`max-w-6xl mx-auto px-8 pb-12 transition-all duration-300 ${loading ? 'opacity-40 pointer-events-none' : 'opacity-100'}`}>
+          
           <Categories setCategory={setCategory} activeCategory={category} />
           
-          <div>
-            <h2 className="text-3xl font-bold mb-6 dark:to-black">Top Headlines</h2>
-            <HeadlineSlider>
-              {validHeadlines.slice(0, 4).map((article) => (
-                <NewsCard 
-                  key={article.id || article.url} 
-                  article={article} 
-                  handleSummarize={handleSummarize} 
-                />
-              ))}
-            </HeadlineSlider>
-          </div>
-          
-          <h2 className="text-3xl font-bold mb-6">Latest News</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-            {validArticles.slice(0, displayCount).map((article) => (
-              <NewsCard 
-                key={article.id || article.url}  
-                article={article} 
-                handleSummarize={handleSummarize}
-              />
-            ))}   
-          </div>
-          
-          {hasMore && (
-            <div className="flex justify-center mt-8">
-              <Button onClick={handleLoadMore}>Load More</Button>
+         
+          {!loading && validArticles.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-24 text-center">
+              <div className="text-7xl mb-4"><SearchX size={100} /></div>
+              <h2 className="text-2xl font-bold">No articles found</h2>
+              <p className="text-gray-500 dark:text-gray-400 mt-2 mb-6">
+                We couldn't find matches for "{searchTerm}"
+              </p>
+              <Button onClick={() => setSearchTerm('')} variant="outline">Clear Search</Button>
             </div>
-          )}
-
-          {!hasMore && articles.length > 0 && (
-            <p className="text-center text-gray-600 dark:text-gray-300 mt-8">
-              You've reached the end of the articles
-            </p>
+          ) : (
+         
+            <>
+              {!searchTerm && validHeadlines.length > 0 && (
+                <div className="mb-12">
+                  <h2 className="text-2xl font-bold mb-6">Top Headlines</h2>
+                  <HeadlineSlider>
+                    {validHeadlines.slice(0, 4).map((article) => (
+                      <NewsCard key={article.id || article.url} article={article} handleSummarize={handleSummarize} />
+                    ))}
+                  </HeadlineSlider>
+                </div>
+              )}
+              
+              <h2 className="text-2xl font-bold mb-6">
+                {searchTerm ? `Results for "${searchTerm}"` : 'Latest News'}
+              </h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {validArticles.slice(0, displayCount).map((article) => (
+                  <NewsCard 
+                    key={article.id || article.url}  
+                    article={article} 
+                    handleSummarize={handleSummarize}
+                  />
+                ))}   
+              </div>
+              
+              {hasMore && (
+                <div className="flex justify-center mt-12">
+                  <Button onClick={handleLoadMore}>Load More</Button>
+                </div>
+              )}
+            </>
           )}
         </div>
-      )}
+      </main>
 
-      {showLimitModal && (
-        <LimitModal setShowLimitModal={setShowLimitModal} />
-      )}
-<Footer/>
-   <SummaryModal
+      <Footer />
+
+      {showLimitModal && <LimitModal setShowLimitModal={setShowLimitModal} />}
+      <SummaryModal
         isOpen={summaryModal.isOpen}
         onClose={closeSummaryModal}
         summary={summaryModal.summary}
@@ -152,7 +163,6 @@ function NewsFeed() {
         isLoading={summaryModal.isLoading}
         user={user}
       />
-   
     </div>
   )
 }

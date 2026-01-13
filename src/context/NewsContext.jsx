@@ -9,18 +9,15 @@ export default function NewsProvider({ children }) {
   const [topHeadlines, setTopHeadlines] = useState([]);
   const [category, setCategory] = useState('general');
   const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // Initial load only
   const [isRefreshing, setIsRefreshing] = useState(false);
- const [theme, setTheme] = useState(() => {
-  const saved = localStorage.getItem('app-theme');
-  if (saved) return saved;
   
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-});
+  const [theme, setTheme] = useState(() => {
+    const saved = localStorage.getItem('app-theme');
+    if (saved) return saved;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  });
 
-
-  
-  // Initialize state directly from localStorage 
   const [lastFetchTime, setLastFetchTime] = useState(() => {
     const saved = localStorage.getItem('lastRSSFetch');
     return saved ? new Date(saved) : null;
@@ -28,11 +25,10 @@ export default function NewsProvider({ children }) {
   
   const hasInitialized = useRef(false);
 
-  // Load articles from the database
-  const loadArticles = useCallback(async () => {
+  // loadArticles
+  const loadArticles = useCallback(async (isInitial = false) => {
     try {
-     
-      if (articles.length === 0) setLoading(true);
+      if (isInitial) setLoading(true);
       
       const [articlesData, headlinesData] = await Promise.all([
         getArticles(category, 50, searchTerm),
@@ -46,92 +42,59 @@ export default function NewsProvider({ children }) {
     } finally {
       setLoading(false);
     }
-  }, [category, searchTerm, articles.length]);
+  }, [category, searchTerm]);
 
-  // Handle manual and background RSS updates
   const refreshRSSFeeds = async () => {
     if (isRefreshing) return;
-
     try {
       setIsRefreshing(true);
-      
       const workPromise = fetchAndStoreRSS(RSS_SOURCES);
       const delayPromise = new Promise(resolve => setTimeout(resolve, 800));
-
       await Promise.all([workPromise, delayPromise]);
 
       const now = new Date();
       localStorage.setItem('lastRSSFetch', now.toISOString());
       setLastFetchTime(now);
-   
       await loadArticles();
-      
     } catch (error) {
       console.error("❌ Refresh Error:", error);
     } finally {
-    
       setIsRefreshing(false); 
     }
   };
 
-  // Initial App Mount Logic
+  // Initial Boot
   useEffect(() => {
-   
     if (hasInitialized.current) return;
     hasInitialized.current = true;
 
     const initializeApp = async () => {
-     
-      await loadArticles();
-      
-    
+      await loadArticles(true); 
       const savedTime = localStorage.getItem('lastRSSFetch');
-      const oneHour = 60 * 60 * 1000;
-      const isExpired = !savedTime || (new Date() - new Date(savedTime)) > oneHour;
-
-      if (isExpired) {
-        refreshRSSFeeds();
-      }
+      const isExpired = !savedTime || (new Date() - new Date(savedTime)) > 3600000;
+      if (isExpired) refreshRSSFeeds();
     };
-
     initializeApp();
   }, [loadArticles]);
 
-  // Sync UI when user changes category or types in search
+  // Handle Search/Category changes silently
   useEffect(() => {
-    if (!loading) {
-      loadArticles();
-    }
-  }, [category, searchTerm, loadArticles, loading]);
+    loadArticles();
+  }, [category, searchTerm, loadArticles]);
 
-  // Light and dark mode
-useEffect(() => {
-  const root = document.documentElement;
-  
-  if (theme === 'dark') {
-    root.classList.add('dark');
-  } else {
-    root.classList.remove('dark');
-  }
-  
-  localStorage.setItem('app-theme', theme);
-}, [theme]);
+  // Theme Logic
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+    localStorage.setItem('app-theme', theme);
+  }, [theme]);
 
-const toggleTheme = () => setTheme(t => t === 'light' ? 'dark' : 'light');
+  const toggleTheme = () => setTheme(t => t === 'light' ? 'dark' : 'light');
+
   return (
     <NewsContext.Provider value={{ 
-      articles, 
-      topHeadlines, 
-      category, 
-      setCategory, 
-      searchTerm, 
-      setSearchTerm, 
-      loading, 
-      isRefreshing, 
-      refreshRSSFeeds, 
-      lastFetchTime,
-      toggleTheme,
-      theme 
+      articles, topHeadlines, category, setCategory, 
+      searchTerm, setSearchTerm, loading, isRefreshing, 
+      refreshRSSFeeds, lastFetchTime, toggleTheme, theme 
     }}>
       {children}
     </NewsContext.Provider>

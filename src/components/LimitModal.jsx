@@ -5,10 +5,10 @@ function LimitModal({ setShowLimitModal }) {
     const navigate = useNavigate()
    
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white rounded-lg p-8 max-w-md">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/15 backdrop-blur-sm">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-8 max-w-md">
             <h3 className="text-2xl font-bold mb-4">You've used 3 free summaries!</h3>
-            <p className="text-gray-700 mb-6">
+            <p className="text-gray-700 dark:text-gray-300 mb-6">
               Create a free account to get unlimited summaries and save your favorites.
             </p>
             <div className="flex gap-4">
@@ -20,14 +20,14 @@ function LimitModal({ setShowLimitModal }) {
               </button>
               <button 
                 onClick={() => navigate('/login')}
-                className="flex-1 border border-blue-600 text-blue-600 px-6 py-3 rounded hover:bg-blue-50"
+                className="flex-1 border border-blue-600 text-blue-600 dark:text-blue-400 px-6 py-3 rounded hover:bg-blue-50"
               >
                 Login
               </button>
             </div>
             <button 
               onClick={() => setShowLimitModal(false)}
-              className="w-full mt-4 text-gray-600 hover:text-gray-800"
+              className="w-full mt-4 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 text-sm"
             >
               Maybe later
             </button>
