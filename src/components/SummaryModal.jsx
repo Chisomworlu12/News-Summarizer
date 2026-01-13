@@ -107,7 +107,7 @@ const navigate = useNavigate();
           
           {!user && !isLoading && (
             <p className="text-xs text-center text-gray-500 dark:text-gray-400 sm:w-2/3 mx-auto">
-              Want to keep this? <span onClick={navigate('/signup')} className="text-blue-600 dark:text-blue-400 font-bold">Sign up</span> to save summaries to your profile.
+              Want to keep this? <span onClick={()=>navigate('/signup')} className="text-blue-600 dark:text-blue-400 font-bold">Sign up</span> to save summaries to your profile.
             </p>
           )}
 
