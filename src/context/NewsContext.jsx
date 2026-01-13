@@ -1,138 +1,139 @@
-import { createContext, useState, useEffect } from 'react'
-import { fetchAndStoreRSS, getArticles, getTopHeadlines } from '../utils/rssParser'
-import { RSS_SOURCES } from '../config/rssSources'
+import { createContext, useState, useEffect, useCallback, useRef } from 'react';
+import { fetchAndStoreRSS, getArticles, getTopHeadlines } from '../utils/rssParser';
+import { RSS_SOURCES } from '../config/rssSources';
 
-export const NewsContext = createContext()
+export const NewsContext = createContext();
 
 export default function NewsProvider({ children }) {
-  const [articles, setArticles] = useState([])
-  const [topHeadlines, setTopHeadlines] = useState([])
-  const [category, setCategory] = useState('general')
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [lastFetchTime, setLastFetchTime] = useState(null)
-  const [isRefreshing, setIsRefreshing] = useState(false)
+  const [articles, setArticles] = useState([]);
+  const [topHeadlines, setTopHeadlines] = useState([]);
+  const [category, setCategory] = useState('general');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+ const [theme, setTheme] = useState(() => {
+  const saved = localStorage.getItem('app-theme');
+  if (saved) return saved;
+  
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+});
 
-  // Load articles from database (FAST - instant loading)
-  const loadArticles = async () => {
+
+  
+  // Initialize state directly from localStorage 
+  const [lastFetchTime, setLastFetchTime] = useState(() => {
+    const saved = localStorage.getItem('lastRSSFetch');
+    return saved ? new Date(saved) : null;
+  });
+  
+  const hasInitialized = useRef(false);
+
+  // Load articles from the database
+  const loadArticles = useCallback(async () => {
     try {
-      setLoading(true)
-      setError(null)
+     
+      if (articles.length === 0) setLoading(true);
       
-      console.log(`📖 Loading articles from database...`)
-      
-      // Fetch from database (instant!)
       const [articlesData, headlinesData] = await Promise.all([
-        getArticles(category, 50),
+        getArticles(category, 50, searchTerm),
         getTopHeadlines(10)
-      ])
+      ]);
       
-      setArticles(articlesData)
-      setTopHeadlines(headlinesData)
-      
-      console.log(`✅ Loaded ${articlesData.length} articles instantly from database`)
-      
+      setArticles(articlesData);
+      setTopHeadlines(headlinesData);
     } catch (err) {
-      setError(err.message)
-      console.error('❌ Error loading articles:', err)
+      console.error('❌ DB Load Error:', err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  }, [category, searchTerm, articles.length]);
 
-  // Fetch fresh RSS data in background (SLOW - only when needed)
+  // Handle manual and background RSS updates
   const refreshRSSFeeds = async () => {
+    if (isRefreshing) return;
+
     try {
-      setIsRefreshing(true)
-      console.log('🔄 Refreshing RSS feeds in background...')
+      setIsRefreshing(true);
       
-      const results = await fetchAndStoreRSS(RSS_SOURCES)
+      const workPromise = fetchAndStoreRSS(RSS_SOURCES);
+      const delayPromise = new Promise(resolve => setTimeout(resolve, 800));
+
+      await Promise.all([workPromise, delayPromise]);
+
+      const now = new Date();
+      localStorage.setItem('lastRSSFetch', now.toISOString());
+      setLastFetchTime(now);
+   
+      await loadArticles();
       
-      setLastFetchTime(new Date())
-      localStorage.setItem('lastRSSFetch', new Date().toISOString())
-      
-      console.log('✅ RSS feeds refreshed successfully')
-      console.log(`📊 New: ${results.success}, Duplicates: ${results.duplicates}`)
-      
-      // Reload articles after refresh
-      await loadArticles()
-      
-      return results
-    } catch (err) {
-      console.error('❌ Error refreshing feeds:', err)
-      setError(err.message)
+    } catch (error) {
+      console.error("❌ Refresh Error:", error);
     } finally {
-      setIsRefreshing(false)
+    
+      setIsRefreshing(false); 
     }
-  }
+  };
 
-  // Check if we need to refresh RSS (only if data is old or missing)
-  const shouldRefreshRSS = () => {
-    const lastFetch = localStorage.getItem('lastRSSFetch')
-    
-    if (!lastFetch) return true 
-    
-    const lastFetchDate = new Date(lastFetch)
-    const now = new Date()
-    const hoursSinceLastFetch = (now - lastFetchDate) / (1000 * 60 * 60)
-    
-    return hoursSinceLastFetch > 1 
-  }
-
-  // Initial load - FAST STRATEGY
+  // Initial App Mount Logic
   useEffect(() => {
+   
+    if (hasInitialized.current) return;
+    hasInitialized.current = true;
+
     const initializeApp = async () => {
-      // STEP 1: Always load from database FIRST (instant!)
-      await loadArticles()
+     
+      await loadArticles();
       
-      // STEP 2: Check if we need to refresh RSS in background
-      if (articles.length === 0 || shouldRefreshRSS()) {
-        console.log('📡 Fetching fresh RSS feeds in background...')
-        // Delay refresh so UI shows immediately
-        setTimeout(() => refreshRSSFeeds(), 1000)
-      } else {
-        console.log('✅ Using cached articles from database')
-        const lastFetch = localStorage.getItem('lastRSSFetch')
-        if (lastFetch) setLastFetchTime(new Date(lastFetch))
+    
+      const savedTime = localStorage.getItem('lastRSSFetch');
+      const oneHour = 60 * 60 * 1000;
+      const isExpired = !savedTime || (new Date() - new Date(savedTime)) > oneHour;
+
+      if (isExpired) {
+        refreshRSSFeeds();
       }
-    }
-    
-    initializeApp()
-  }, []) 
+    };
 
-  // Reload articles when category changes (FAST - from database only)
+    initializeApp();
+  }, [loadArticles]);
+
+  // Sync UI when user changes category or types in search
   useEffect(() => {
-    if (lastFetchTime) {
-      loadArticles()
+    if (!loading) {
+      loadArticles();
     }
-  }, [category])
+  }, [category, searchTerm, loadArticles, loading]);
 
-  // Auto-refresh every 1 hour (changed from 30 minutes for better performance)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      console.log('⏰ Auto-refresh triggered (1 hour elapsed)')
-      refreshRSSFeeds()
-    }, 60 * 60 * 1000) 
-    
-    return () => clearInterval(interval)
-  }, [])
-
-  const value = {
-    articles,
-    topHeadlines,
-    category,
-    setCategory,
-    loading,
-    error,
-    refreshRSSFeeds,
-    isRefreshing,
-    lastFetchTime
+  // Light and dark mode
+useEffect(() => {
+  const root = document.documentElement;
+  
+  if (theme === 'dark') {
+    root.classList.add('dark');
+  } else {
+    root.classList.remove('dark');
   }
-console.log(articles);
+  
+  localStorage.setItem('app-theme', theme);
+}, [theme]);
 
+const toggleTheme = () => setTheme(t => t === 'light' ? 'dark' : 'light');
   return (
-    <NewsContext.Provider value={value}>
+    <NewsContext.Provider value={{ 
+      articles, 
+      topHeadlines, 
+      category, 
+      setCategory, 
+      searchTerm, 
+      setSearchTerm, 
+      loading, 
+      isRefreshing, 
+      refreshRSSFeeds, 
+      lastFetchTime,
+      toggleTheme,
+      theme 
+    }}>
       {children}
     </NewsContext.Provider>
-  )
+  );
 }

@@ -1,3 +1,5 @@
+import ThemeToggle from "../ThemeToggle"
+
 function MobileMenu({ user, handleLogout, closeMenu, navigate, getDisplayName }) {
     return (
        <div className="md:hidden mt-4 pb-4 border-t pt-4">
@@ -47,6 +49,10 @@ function MobileMenu({ user, handleLogout, closeMenu, navigate, getDisplayName })
                             </button>
                         </div>
                     )}
+                    <div className="mt-4 px-4">
+                        <ThemeToggle/>
+                    </div>
+                    
                 </div>
     )
 }

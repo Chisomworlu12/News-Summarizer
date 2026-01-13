@@ -1,3 +1,5 @@
+import ThemeToggle from "../ThemeToggle"
+
 function DesktopMenu({ user, handleLogout, navigate, getDisplayName }) {
     return (
         <div className="hidden md:flex gap-4 items-center">
@@ -5,11 +7,11 @@ function DesktopMenu({ user, handleLogout, navigate, getDisplayName }) {
                         <>
                             <button 
                                 onClick={() => navigate('/savedsummary')}
-                                className="text-gray-700 hover:text-blue-600 font-semibold"
+                                className="text-gray-700 hover:text-blue-600 font-semibold dark:text-gray-300"
                             >
                                 Saved Summaries
                             </button>
-                            <span className="text-gray-600 font-semibold">
+                            <span className="text-gray-600 font-semibold dark:text-gray-300">
                                 {getDisplayName(user.email)}
                             </span>
                             <button 
@@ -23,7 +25,7 @@ function DesktopMenu({ user, handleLogout, navigate, getDisplayName }) {
                         <>
                             <button 
                                 onClick={() => navigate('/login')}
-                                className="text-blue-600 hover:text-blue-700 font-semibold"
+                                className="text-blue-600 hover:text-blue-700 font-semibold dark:text-gray-300"
                             >
                                 Login
                             </button>
@@ -35,6 +37,7 @@ function DesktopMenu({ user, handleLogout, navigate, getDisplayName }) {
                             </button>
                         </>
                     )}
+                    <ThemeToggle/>
                 </div>
         
     )

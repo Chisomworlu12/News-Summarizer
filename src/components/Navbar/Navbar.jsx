@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"
 import DesktopMenu from "./DesktopMenu";
 import MobileMenu from "./MobileMenu";
 import HamburgerIcon from "./HamburgerIcon";
+import Search from "../Search";
 
 export default function Navbar({user, handleLogout}) {
     const navigate = useNavigate()
@@ -28,10 +29,11 @@ export default function Navbar({user, handleLogout}) {
     }
 
     return(
-        <nav className="bg-white shadow-md p-4">
+        <nav className="bg-white dark:bg-gray-800 shadow-md p-4">
             <div className="max-w-6xl mx-auto flex justify-between items-center">
-                <h1 className="text-2xl font-bold text-blue-600">News Summarizer</h1>
-                
+                <h1 className="text-2xl font-bold text-blue-600 dark:text-gray-300 hidden md:block">News Summarizer</h1>
+                <h1 className="text-2xl font-bold text-blue-600 dark:text-white md:hidden">NS</h1>
+                <Search/>
                 <HamburgerIcon isOpen={isMenuOpen} toggleMenu={toggleMenu} />
 
                 

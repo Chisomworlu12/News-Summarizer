@@ -12,11 +12,11 @@ function ResetPassword() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const navigate = useNavigate()
 
-  // Check if user came from valid reset link
+  
   useEffect(() => {
     supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === "PASSWORD_RECOVERY") {
-        // User clicked valid reset link
+   
         console.log("Ready to reset password")
       }
     })
@@ -25,7 +25,7 @@ function ResetPassword() {
   const handleResetPassword = async (e) => {
     e.preventDefault()
     
-    // Validate passwords match
+
     if (password !== confirmPassword) {
       setMessage('Error: Passwords do not match')
       return
@@ -58,17 +58,17 @@ function ResetPassword() {
   }
 
   return (
-    <div className="min-h-screen m-10 flex items-center justify-center">
-      <div className="bg-white p-6 rounded-lg shadow-md w-96">
+    <div className="min-h-screen dark:bg-gray-800 flex items-center justify-center">
+      <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md w-96">
         <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold mb-2">Reset Password</h1>
-          <p className="text-gray-600 text-sm">Enter your new password</p>
+          <h1 className="text-2xl font-bold mb-2 dark:text-gray-300">Reset Password</h1>
+          <p className="text-gray-600 text-sm dark:text-gray-400">Enter your new password</p>
         </div>
 
         <form onSubmit={handleResetPassword}>
-          {/* New Password */}
+         
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
               New Password
             </label>
             <div className="relative">
@@ -77,7 +77,7 @@ function ResetPassword() {
                 placeholder="Enter new password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full py-3 px-4 border border-gray-300 rounded-md text-sm transition-colors focus:outline-none focus:border-indigo-500"
+                className="w-full py-3 px-4 border border-gray-300 rounded-md text-sm transition-colors focus:outline-none focus:border-indigo-500 dark:text-gray-300"
                 required
               />
               <button
@@ -91,9 +91,9 @@ function ResetPassword() {
             <p className="text-xs text-gray-500 mt-1">Minimum 6 characters</p>
           </div>
 
-          {/* Confirm Password */}
+         
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
               Confirm Password
             </label>
             <div className="relative">
@@ -102,7 +102,7 @@ function ResetPassword() {
                 placeholder="Confirm new password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full py-3 px-4 border border-gray-300 rounded-md text-sm transition-colors focus:outline-none focus:border-indigo-500"
+                className="w-full py-3 px-4 border border-gray-300 rounded-md text-sm transition-colors focus:outline-none focus:border-indigo-500 dark:text-gray-300"
                 required
               />
               <button
@@ -118,7 +118,7 @@ function ResetPassword() {
           <button
             type="submit"
             disabled={loading}
-            className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white border-none py-3.5 px-8 rounded-lg text-base font-semibold cursor-pointer transition-all duration-200 w-full hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-300 mb-4 disabled:opacity-50 disabled:cursor-not-allowed"
+             className="bg-gradient-to-br from-indigo-500 to-purple-600 dark:from-indigo-500 dark:to-purple-600 text-white border-none py-3.5 px-8 rounded-lg text-base font-semibold cursor-pointer transition-all duration-200 w-full hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-300 dark:hover:shadow-indigo-800 mb-4 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Resetting...' : 'Reset Password'}
           </button>
@@ -137,7 +137,7 @@ function ResetPassword() {
         <p className="text-center text-sm text-gray-600 mt-4">
           <span 
             onClick={() => navigate('/login')} 
-            className="text-indigo-500 cursor-pointer hover:underline"
+            className="text-indigo-500 dark:text-indigo-400 cursor-pointer hover:underline"
           >
             Back to Login
           </span>

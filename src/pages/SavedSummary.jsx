@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useSummaries } from '../hooks/useSummaries';
 import SummaryCard from '../components/SummaryCard';
 import LoadingSpinner from '../components/Spinner';
+import Footer from '../components/Footer'
 
 function SavedSummaries() {
   const navigate = useNavigate();
@@ -13,12 +14,12 @@ function SavedSummaries() {
   if (loading) return <LoadingSpinner />;
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-800">
       <Navbar user={user} handleLogout={signOut} />
       
       <div className="max-w-4xl mx-auto p-8">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">Your Saved Summaries</h1>
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-300">Your Saved Summaries</h1>
           <button 
             onClick={() => navigate('/')}
             className="text-blue-600 hover:underline font-medium"
@@ -49,6 +50,7 @@ function SavedSummaries() {
           </div>
         )}
       </div>
+      <Footer/>
     </div>
   );
 }
