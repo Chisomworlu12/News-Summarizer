@@ -67,7 +67,7 @@ function NewsFeed() {
       )}
       
       <main className="flex-grow relative">
-
+      {loading && (<LoadingSpinner />)}
         {!error && (
           <div className="max-w-6xl mx-auto px-8 pt-4">
             <div className="flex justify-between items-center mb-6 bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border dark:border-gray-700">
