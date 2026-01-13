@@ -6,17 +6,17 @@ A modern, responsive news discovery platform engineered to solve News Fatigue an
 
 My research into modern audience engagement revealed a growing crisis in how people consume information. The following pain points served as the foundation for this project:
 
-[public/4.jpg]
+![](public/4.jpg)
 
-### 1. News Fatigue & Avoidance [public/1.jpg]
+### ![1. News Fatigue & Avoidance ](public/1.jpg)
 
 Audiences are becoming overwhelmed by the sheer volume of news, leading to a "fatigue" that causes them to stop engaging with current events entirely.
 
-### 2. The "2 Million Words" Issue [public/3.jpg]
+### ![2. The "2 Million Words" Issue](public/3.jpg)
 
 Users expressed frustration with the length of modern articles. The common sentiment is: "I just need to know the main topic, not read 2 million words."
 
-### 3. Lack of Information Standardization [public/2.jpg]
+### ![3. Lack of Information Standardization ](public/2.jpg)
 
 Content production is often distorted by advertising models rather than user needs, making it difficult for readers to find structured, unbiased summaries.
 
