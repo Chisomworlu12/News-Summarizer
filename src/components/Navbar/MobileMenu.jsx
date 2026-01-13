@@ -13,7 +13,7 @@ function MobileMenu({ user, handleLogout, closeMenu, navigate, getDisplayName })
                                     navigate('/savedsummary')
                                     closeMenu()
                                 }}
-                                className="text-left text-gray-700 hover:bg-blue-50 px-4 py-2 rounded font-semibold"
+                                className="text-left text-gray-700 hover:bg-blue-50 px-4 py-2 rounded dark:text-gray-300 font-semibold"
                             >
                                 Saved Summaries
                             </button>
