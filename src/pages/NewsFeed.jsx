@@ -12,6 +12,7 @@ import LoadingSpinner from '../components/Spinner'
 import Button from '../components/Button'
 import SummaryModal from '../components/SummaryModal'
 import { useAuth } from '../context/AuthContext'
+import Footer from '../components/Footer'
 
 
 function NewsFeed() {
@@ -53,7 +54,7 @@ function NewsFeed() {
   const hasMore = displayCount < articles.length
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 dark:text-white">
       <Navbar user={user} handleLogout={handleLogout} />
      
       {!user && summaryCount > 0 && (
@@ -63,8 +64,8 @@ function NewsFeed() {
     
       {!loading && !error && (
         <div className="max-w-6xl mx-auto px-8 pt-4">
-          <div className="flex justify-between items-center mb-6 bg-white rounded-lg p-4 shadow-sm">
-            <div className="text-sm text-gray-600">
+          <div className="flex justify-between items-center mb-6 bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm">
+            <div className="text-sm text-gray-600 dark:text-gray-300">
               {lastFetchTime ? (
                 <>
                   Last updated: <span className="font-semibold">{new Date(lastFetchTime).toLocaleTimeString()}</span>
@@ -84,10 +85,10 @@ function NewsFeed() {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
                   </svg>
-                  Refreshing...
+                  Updating...
                 </>
               ) : (
-                <>🔄 Refresh News</>
+                <>🔄 Updated News</>
               )}
             </Button>
           </div>
@@ -102,7 +103,7 @@ function NewsFeed() {
           <Categories setCategory={setCategory} activeCategory={category} />
           
           <div>
-            <h2 className="text-3xl font-bold mb-6">Top Headlines</h2>
+            <h2 className="text-3xl font-bold mb-6 dark:to-black">Top Headlines</h2>
             <HeadlineSlider>
               {validHeadlines.slice(0, 4).map((article) => (
                 <NewsCard 
@@ -132,7 +133,7 @@ function NewsFeed() {
           )}
 
           {!hasMore && articles.length > 0 && (
-            <p className="text-center text-gray-600 mt-8">
+            <p className="text-center text-gray-600 dark:text-gray-300 mt-8">
               You've reached the end of the articles
             </p>
           )}
@@ -142,7 +143,7 @@ function NewsFeed() {
       {showLimitModal && (
         <LimitModal setShowLimitModal={setShowLimitModal} />
       )}
-
+<Footer/>
    <SummaryModal
         isOpen={summaryModal.isOpen}
         onClose={closeSummaryModal}

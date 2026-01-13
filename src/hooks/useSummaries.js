@@ -7,7 +7,6 @@ export function useSummaries(user) {
   const [error, setError] = useState(null);
 
   const fetchSummaries = useCallback(async () => {
-    // 1. Safety check: Ensure user and user.id exist
     if (!user?.id) {
       setSummaries([]);
       setLoading(false);

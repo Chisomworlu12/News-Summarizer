@@ -1,5 +1,4 @@
 export const RSS_SOURCES = [
-  // General News
   {
     name: "The Guardian",
     url: "https://www.theguardian.com/world/rss",
@@ -11,7 +10,6 @@ export const RSS_SOURCES = [
     category: "general",
   },
 
-  // Technology
   {
     name: "Wired",
     url: "https://www.wired.com/feed/rss",
@@ -23,7 +21,6 @@ export const RSS_SOURCES = [
     category: "technology",
   },
 
-  // Sports
   {
     name: "BBC Sport",
     url: "https://feeds.bbci.co.uk/sport/rss.xml",
@@ -35,14 +32,17 @@ export const RSS_SOURCES = [
     category: "sports",
   },
 
-  // Business
   {
     name: "CNBC",
     url: "https://www.cnbc.com/id/10001147/device/rss/rss.html",
     category: "business",
   },
+  {
+    name: "BBC Business",
+    url: "http://feeds.bbci.co.uk/news/business/rss.xml",
+    category: "business",
+  },
 
-  // Politics
   {
     name: "The Guardian Politics",
     url: "https://www.theguardian.com/politics/rss",

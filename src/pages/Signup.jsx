@@ -28,7 +28,7 @@ function Signup() {
       setError(error.message);
       setLoading(false);
     } else {
-      // Check if email confirmation is required
+     
       if (data?.user?.identities?.length === 0) {
         setError('User already exists');
       } else {
@@ -53,18 +53,18 @@ const handleGoogleSignUp = async () => {
       setAgreeToTerms(e.target.checked);
     };
   return (
-    <div className="min-h-screen  m-10 flex items-center justify-center">
-      <div className="bg-white p-4 rounded-lg shadow-md w-96 my-2">
+    <div className="min-h-screen dark:bg-gray-800 flex items-center justify-center">
+      <div className="bg-white dark:bg-gray-700 p-4 rounded-lg shadow-md w-96 my-2">
         <div className="text-center mb-4">
-          <h1 className="text-2xl font-bold mb-2">
+          <h1 className="text-2xl font-bold mb-2 dark:text-gray-300">
             <strong>Create your account</strong>
           </h1>
-          <p className="text-gray-600 text-sm mb-6">
+          <p className="text-gray-600 text-sm mb-6 dark:text-gray-400">
             Get your daily news in seconds.
           </p>
 
           <div onClick={handleGoogleSignUp} className="flex gap-5 justify-center mb-4">
-            <div className="inline-block min-w-[150px] max-w-[180px] border border-gray-300 py-2 px-4 rounded-md cursor-pointer text-center hover:bg-gray-50 transition-colors">
+            <div className="inline-block min-w-[150px] max-w-[180px] border border-gray-300 py-2 px-4 rounded-md cursor-pointer text-center hover:bg-gray-50 transition-colors dark:bg-white dark:hover:bg-gray-100">
               <p className="flex items-center justify-center gap-2">
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" fill="#4285F4"/>
@@ -80,14 +80,14 @@ const handleGoogleSignUp = async () => {
 
           <div className="flex items-center text-center my-5 text-gray-600">
             <div className="flex-1 border-b border-gray-300"></div>
-            <span className="px-4 text-xs">OR SIGNUP WITH EMAIL</span>
+            <span className="px-4 text-xs dark:text-gray-300">OR SIGNUP WITH EMAIL</span>
             <div className="flex-1 border-b border-gray-300"></div>
           </div>
         </div>
        
        <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
             Email Address
           </label>
           <input
@@ -95,10 +95,10 @@ const handleGoogleSignUp = async () => {
             placeholder="Enter your email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full py-3 px-4 border border-gray-300 rounded-md text-sm transition-colors focus:outline-none focus:border-indigo-500"
+            className="w-full py-3 px-4 border border-gray-300 rounded-md text-sm dark:text-gray-300 transition-colors focus:outline-none focus:border-indigo-500"
           />
 
-          <label className="block text-sm font-medium text-gray-700 mb-2 mt-4">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gra7-300vmb-2 mt-4">
             Password
           </label>
           <div className="relative">
@@ -107,28 +107,28 @@ const handleGoogleSignUp = async () => {
               placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full py-3 px-4 border border-gray-300 rounded-md text-sm transition-colors focus:outline-none focus:border-indigo-500"
+              className="w-full py-3 px-4 border border-gray-300 rounded-md text-sm dark:text-gray-300  transition-colors focus:outline-none focus:border-indigo-500"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer hover:text-gray-600"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-300cursor-pointer hover:text-gray-600"
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
           </div>
-            <p className="text-left mt-2 text-sm text-gray-600">
+            <p className="text-left mt-2 text-sm text-gray-600 dark:text-gray-300">
               Must be at least 8 characters.
             </p>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2 mt-4">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 mt-4">
               Confirm Password
             </label>
             <div className="relative">
               <input
                 type={showConfirmPassword ? "text" : "password"}
                 placeholder="Confirm your password"
-                className="w-full py-3 px-4 border border-gray-300 rounded-md text-sm transition-colors focus:outline-none focus:border-indigo-500"
+                className="w-full py-3 px-4 border border-gray-300 rounded-md text-sm dark:text-gray-300 transition-colors focus:outline-none focus:border-indigo-500"
               />
               <button
                 type="button"
@@ -141,7 +141,7 @@ const handleGoogleSignUp = async () => {
           </div>
         </div>
         <div className="checkbox-group flex mb-4">
-          <label>
+          <label >
             <input
               type="checkbox"
               className="mr-2"
@@ -149,15 +149,15 @@ const handleGoogleSignUp = async () => {
               onChange={handleSingleCheckbox}
             />
           </label>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-600 dark:text-gray-300">
             By creating an account, you agree to our
             <a href="#" className="text-indigo-500 hover:text-indigo-700">
-              {" "}
+             
               Terms of Service
-            </a>{" "}
+            </a>
             and
             <a href="#" className="text-indigo-500 hover:text-indigo-700">
-              {" "}
+              
               Privacy Policy
             </a>
             .
@@ -166,7 +166,7 @@ const handleGoogleSignUp = async () => {
         <button
          type="sumbit"
           disabled={loading}
-          className="bg-linear-to-br from-indigo-500 to-purple-600 text-white border-none py-3.5 px-8 rounded-lg text-base font-semibold cursor-pointer transition-all duration-200 w-full hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-300 mb-4"
+          className="bg-gradient-to-br from-indigo-500 to-purple-600 dark:from-indigo-500 dark:to-purple-600 text-white border-none py-3.5 px-8 rounded-lg text-base font-semibold cursor-pointer transition-all duration-200 w-full hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-300 dark:hover:shadow-indigo-800 mb-4 disabled:opacity-50 disabled:cursor-not-allowed"
         >
          {loading ? 'Loading...' : 'Sign Up'}
         </button>
@@ -179,7 +179,7 @@ const handleGoogleSignUp = async () => {
           Back
         </button>
 
-        <p className="text-center mt-2 text-sm text-gray-600">
+        <p className="text-center mt-2 text-sm text-gray-600 dark:text-gray-300">
           Already have an account?
           <a onClick={() => navigate('/login')} className="text-blue-500">
             Log in
