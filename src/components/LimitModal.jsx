@@ -7,7 +7,7 @@ function LimitModal({ setShowLimitModal }) {
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/15 backdrop-blur-sm">
           <div className="bg-white dark:bg-gray-800 rounded-lg p-8 max-w-md">
-            <h3 className="text-2xl font-bold mb-4">You've used 3 free summaries!</h3>
+            <h3 className="text-2xl font-bold mb-4">You've used 2 free summaries!</h3>
             <p className="text-gray-700 dark:text-gray-300 mb-6">
               Create a free account to get unlimited summaries and save your favorites.
             </p>
