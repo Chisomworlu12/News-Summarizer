@@ -20,7 +20,7 @@ export default function Footer() {
 
         <div className="flex space-x-6 text-gray-600 dark:text-gray-400">
           <span className="hover:text-blue-500 cursor-pointer transition-colors"><a href="https://github.com/Chisomworlu12" target="_blank" rel="noopener noreferrer">Github</a></span>
-          <span className="hover:text-blue-500 cursor-pointer transition-colors"><a href="https://yourportfolio.com" target="_blank" rel="noopener noreferrer">Portfolio</a></span>
+          <span className="hover:text-blue-500 cursor-pointer transition-colors"><a href="https://chisom-portfoilio.vercel.app/" target="_blank" rel="noopener noreferrer">Portfolio</a></span>
         </div>
       </div>
     </footer>
