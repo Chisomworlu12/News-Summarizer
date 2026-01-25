@@ -3,6 +3,10 @@
     {
       "source": "/guardian-proxy/:path*",
       "destination": "https://content.guardianapis.com/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
