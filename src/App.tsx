@@ -1,12 +1,12 @@
-import Signup from './pages/Signup'
+import Signup from './pages/Signup.jsx'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import Login from './pages/Login'
-import NewsFeed from './pages/NewsFeed'
-import SavedSummary from './pages/SavedSummary'
-import NewsProvider from './context/NewsContext'
-import ForgotPassword from './pages/ForgotPassword'
-import ResetPassword from './pages/ResetPassword'
-import { AuthProvider } from './context/AuthContext'
+import Login from './pages/Login.jsx'
+import NewsFeed from './pages/NewsFeed.jsx'
+import SavedSummary from './pages/SavedSummary.jsx'
+import NewsProvider from './context/NewsContext.jsx'
+import ForgotPassword from './pages/ForgotPassword.jsx'
+import ResetPassword from './pages/ResetPassword.jsx'
+import { AuthProvider } from './context/AuthContext.jsx'
 
 
 function App() {
