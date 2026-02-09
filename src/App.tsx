@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Login from './pages/Login.jsx'
 import NewsFeed from './pages/NewsFeed.jsx'
 import SavedSummary from './pages/SavedSummary.jsx'
-import NewsProvider from './context/NewsContext.jsx'
+import NewsProvider from './context/NewsContext.js'
 import ForgotPassword from './pages/ForgotPassword.jsx'
 import ResetPassword from './pages/ResetPassword.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
@@ -16,7 +16,7 @@ function App() {
     <>
 <BrowserRouter>
 <AuthProvider>
-    <NewsProvider>
+    <NewsProvider>  
 <Routes>
   <Route path="/" element={<NewsFeed />} />
   <Route path="/login" element={<Login />} />
