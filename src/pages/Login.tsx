@@ -22,7 +22,7 @@ function Login() {
     if (error) {
       setMessage('Error: ' + error.message)
     } else {
-      navigate('/')
+      navigate('/newsfeed')
     }
     setLoading(false) 
 
