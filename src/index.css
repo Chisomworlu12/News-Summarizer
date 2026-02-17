@@ -1,3 +1,42 @@
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-brand-blue: #6477f2;
+  --color-brand-blue-light: #7e8df5;
+  --color-brand-green: #10b981;
+  --color-brand-purple: #a855f7;
+  --color-dark-brand-blue: #818cf8;
+  --color-dark-brand-blue-light: #9ea5f9;
+}
+
+li {
+  @apply text-left dark:text-gray-200 text-blue-600 hover:transform hover:scale-105 transition duration-500 px-4 py-2 rounded font-semibold;
+}
+.features {
+  @apply text-center flex flex-col items-center text-gray-700 dark:text-gray-300;
+}
+.feature-title {
+  @apply text-xl font-bold mb-4;
+}
+.feature-icon {
+  @apply rounded-2xl w-13 h-13 flex items-center justify-center mb-2 mx-auto;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}

@@ -44,10 +44,10 @@ function NewsFeed() {
   const { user, handleLogout } = useAuth()
 
   const validArticles = articles.filter(article => 
-    article.url_to_image || article.fields?.thumbnail
+    article.url_to_image
   )
   const validHeadlines = topHeadlines.filter(article => 
-    article.url_to_image || article.fields?.thumbnail
+    article.url_to_image
   )
   
   const handleLoadMore = () => {
