@@ -21,7 +21,7 @@ return(
     <AmbientBackground/>
    <Navbar user={null} handleLogout={() => {}} />
     
-    <Hero/>``
+    <Hero/>
     <ScrollReveal>
         <div id= "how-it-works">
           <How/>
