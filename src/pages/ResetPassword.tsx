@@ -122,7 +122,7 @@ const ResetPassword = () => {
           <button
             type="submit"
             disabled={loading}
-             className="bg-linear-to-br from-indigo-500 to-purple-600 dark:from-indigo-500 dark:to-purple-600 text-white border-none py-3.5 px-8 rounded-lg text-base font-semibold cursor-pointer transition-all duration-200 w-full hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-300 dark:hover:shadow-indigo-800 mb-4 disabled:opacity-50 disabled:cursor-not-allowed"
+             className="bg-linear-to-br from-brand-blue to-dark-brand-blue dark:from-brand-blue dark:to-dark-brand-blue text-white border-none py-3.5 px-8 rounded-lg text-base font-semibold cursor-pointer transition-all duration-200 w-full hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-300 dark:hover:shadow-indigo-800 mb-4 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Resetting...' : 'Reset Password'}
           </button>
@@ -141,7 +141,7 @@ const ResetPassword = () => {
         <p className="text-center text-sm text-gray-600 mt-4">
           <span 
             onClick={() => navigate('/login')} 
-            className="text-indigo-500 dark:text-indigo-400 cursor-pointer hover:underline"
+            className="text-brand-blue dark:text-dark-brand-blue cursor-pointer hover:underline"
           >
             Back to Login
           </span>

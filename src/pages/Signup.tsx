@@ -186,7 +186,7 @@ function Signup() {
               onChange={(e) => setAgreeToTerms(e.target.checked)}
             />
             <label htmlFor="terms" className="text-xs text-gray-600 dark:text-gray-400 leading-tight">
-              By creating an account, you agree to our <a href="#" className="text-indigo-500 font-medium">Terms</a> and <a href="#" className="text-indigo-500 font-medium">Privacy Policy</a>.
+              By creating an account, you agree to our <a href="#" className="text-brand-blue font-medium">Terms</a> and <a href="#" className="text-brand-blue font-medium">Privacy Policy</a>.
             </label>
           </div>
           {fieldErrors.checkbox && <p className="text-red-500 text-xs mt-1">{fieldErrors.checkbox}</p>}
@@ -194,7 +194,7 @@ function Signup() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-brand-blue text-white py-3 rounded-lg font-semibold hover:bg-brand-blue-light dark:bg-dark-brand-blue hover:bg-dark-brand-blue-light transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Creating account...' : 'Create Account'}
           </button>
@@ -203,7 +203,7 @@ function Signup() {
         <div className="mt-6 text-center text-sm">
           <p className="text-gray-600 dark:text-gray-400">
             Already have an account?{" "}
-            <button onClick={() => navigate('/login')} className="text-indigo-500 font-semibold hover:underline">
+            <button onClick={() => navigate('/login')} className="text-brand-blue font-semibold hover:underline">
               Log in
             </button>
           </p>

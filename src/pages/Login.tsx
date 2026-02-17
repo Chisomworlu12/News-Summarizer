@@ -114,7 +114,7 @@ function Login() {
         </div>
 
         <p className="text-right text-sm mb-2">
-          <a  onClick={() => navigate('/forgot-password')}  className="text-indigo-500 hover:text-indigo-700 ">
+          <a  onClick={() => navigate('/forgot-password')}  className="text-brand-blue ">
             Forgot Password?
           </a>
         </p>
@@ -122,13 +122,13 @@ function Login() {
         <button 
           type="submit"
           disabled={loading} 
-          className="bg-linear-to-br from-indigo-500 to-purple-600 dark:from-indigo-500 dark:to-purple-600 text-white border-none py-3.5 px-8 rounded-lg text-base font-semibold cursor-pointer transition-all duration-200 w-full hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-300 dark:hover:shadow-indigo-800 mb-4 disabled:opacity-50 disabled:cursor-not-allowed"
+          className=" bg-brand-blue dark:bg-dark-brand-blue text-white border-none py-3.5 px-8 rounded-lg text-base font-semibold cursor-pointer transition-all duration-200 w-full hover:-translate-y-0.5 hover:shadow-lg mb-4 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? 'Loading...' : 'Log In'}
         </button>
          </form> 
         <button 
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/newsfeed')}
           className="bg-gray-100 text-gray-600 border-none py-3.5 px-6 rounded-lg text-sm font-semibold cursor-pointer transition-colors w-full hover:bg-gray-200 mb-4"
         >
           Back
@@ -138,7 +138,7 @@ function Login() {
           Don't have an account?
           <span 
             onClick={() => navigate('/signup')} 
-            className="text-blue-500 cursor-pointer hover:underline"
+            className="text-brand-blue cursor-pointer hover:underline"
           >
             Sign up
           </span>

@@ -47,7 +47,7 @@ const MobileMenu:React.FC<MobileMenuProps> = ({ user, handleLogout, closeMenu, n
                                     navigate('/login')
                                     closeMenu()
                                 }}
-                                className="text-left text-blue-600 hover:bg-blue-50 px-4 py-2 rounded font-semibold"
+                                className="text-left text-brand-blue dark:text-dark-brand-blue px-4 py-2 rounded font-semibold"
                             >
                                 Login
                             </button>
@@ -56,7 +56,7 @@ const MobileMenu:React.FC<MobileMenuProps> = ({ user, handleLogout, closeMenu, n
                                     navigate('/signup')
                                     closeMenu()
                                 }}
-                                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 font-semibold"
+                                className="bg-brand-blue dark:bg-dark-brand-blue text-white px-4 py-2 rounded font-semibold"
                             >
                                 Sign Up
                             </button>
