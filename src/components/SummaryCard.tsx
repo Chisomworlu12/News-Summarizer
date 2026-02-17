@@ -51,8 +51,8 @@ const SummaryCard:React.FC<SummaryCardProps>=({ item, handleDelete }) =>{
         )}
 
         
-        <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
-          <h3 className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">
+        <div className="bg-blue-50 border-l-4 border-brand-blue dark:border-dark-brand-blue p-4 rounded-r-lg">
+          <h3 className="text-xs font-bold text-brand-blue dark:text-dark-brand-blue uppercase tracking-wider mb-2">
             AI Summary
           </h3>
           <p className="text-gray-700 leading-relaxed whitespace-pre-line">
@@ -63,7 +63,7 @@ const SummaryCard:React.FC<SummaryCardProps>=({ item, handleDelete }) =>{
           {isLong && (
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="mt-3 flex items-center gap-1 text-blue-700 font-bold text-sm hover:text-blue-900"
+              className="mt-3 flex items-center gap-1 text-brand-blue dark:text-dark-brand-blue font-bold text-sm hover:text-brand-blue-light dark:hover:text-dark-brand-blue-light transition-colors"
             >
               {isExpanded ? (
                 <><ChevronUp size={16} /> Show Less</>
@@ -83,7 +83,7 @@ const SummaryCard:React.FC<SummaryCardProps>=({ item, handleDelete }) =>{
             href={item.article_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1 text-blue-600 dark:text-blue-700 font-semibold hover:underline"
+            className="flex items-center gap-1 text-brand-blue dark:text-dark-brand-blue font-semibold hover:underline"
           >
             Original Source <ExternalLink size={12} />
           </a>

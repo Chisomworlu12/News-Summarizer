@@ -50,7 +50,7 @@ const NewsCard:React.FC<NewsCardProps>=({ article, handleSummarize })=>{
         </div>
 
         
-        <h3 className="text-lg font-bold mb-2 line-clamp-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200">
+        <h3 className="text-lg font-bold mb-2 line-clamp-2 hover:text-brand-blue dark:hover:text-dark-brand-blue transition-colors duration-200">
           {title}
         </h3>
 
@@ -64,7 +64,7 @@ const NewsCard:React.FC<NewsCardProps>=({ article, handleSummarize })=>{
             href={articleUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-1 bg-blue-600 dark:bg-blue-700 hover:bg-blue-700 dark:hover:bg-blue-800 text-white text-center py-2 px-4 rounded-lg transition-colors duration-200 "
+            className="flex-1 bg-brand-blue dark:bg-dark-brand-blue  hover:bg-dark-brand-blue dark:hover:bg-dark-brand-blue text-gray-100 text-center py-2 px-4 rounded-lg transition-colors duration-200 "
           >
             Read full story→ 
           </a>

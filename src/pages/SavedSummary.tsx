@@ -21,8 +21,8 @@ function SavedSummaries() {
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-300">Your Saved Summaries</h1>
           <button 
-            onClick={() => navigate('/')}
-            className="text-blue-600 hover:underline font-medium"
+            onClick={() => navigate('/newsfeed')}
+            className="text-brand-blue dark:text-dark-brand-blue hover:underline font-medium"
           >
             ← Back to Feed
           </button>
@@ -32,8 +32,8 @@ function SavedSummaries() {
           <div className="bg-white rounded-xl p-12 text-center shadow-sm">
             <p className="text-gray-500 mb-6">You haven't saved any summaries yet.</p>
             <button 
-              onClick={() => navigate('/')}
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg"
+              onClick={() => navigate('/newsfeed')}
+              className="bg-brand-blue dark:bg-dark-brand-blue text-white px-6 py-2 rounded-lg"
             >
               Explore News
             </button>

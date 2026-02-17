@@ -36,7 +36,7 @@ const navigate = useNavigate();
       <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] flex flex-col z-10 overflow-hidden">
         
       
-        <div className="bg-linear-to-r from-blue-600 to-indigo-700 text-white p-6">
+        <div className="bg-linear-to-r from-brand-blue to-indigo-700 text-white p-6">
           <div className="flex justify-between items-start">
             <div>
               <h2 className="text-2xl font-bold flex items-center gap-2">
@@ -52,7 +52,7 @@ const navigate = useNavigate();
             </button>
           </div>
           {article && (
-            <p className="text-blue-100 text-sm mt-3 line-clamp-2 font-medium italic">
+            <p className="text-brand-blue dark:text-dark-brand-blue text-sm mt-3 line-clamp-2 font-medium italic">
               "{article.title}"
             </p>
           )}
@@ -63,9 +63,9 @@ const navigate = useNavigate();
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-16">
               <div className="relative">
-                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600 dark:border-blue-600"></div>
+                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-brand-blue dark:border-dark-brand-blue"></div>
                 <div className="absolute inset-0 flex items-center justify-center">
-                   <div className="h-8 w-8 bg-blue-100 dark:bg-blue-900 rounded-full"></div>
+                   <div className="h-8 w-8 bg-brand-blue dark:bg-dark-brand-blue rounded-full"></div>
                 </div>
               </div>
               <p className="text-gray-500 dark:text-gray-400 mt-6 font-medium animate-pulse">Analyzing article content...</p>
@@ -83,7 +83,7 @@ const navigate = useNavigate();
                   href={article.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:text-indigo-700 dark:hover:text-indigo-400 font-bold transition-colors group"
+                  className="inline-flex items-center gap-2 text-brand-blue dark:text-dark-brand-blue hover:text-brand-blue-light dark:hover:text-dark-brand-blue-light font-bold transition-colors group"
                 >
                   Read full story 
                   <ExternalLink size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />

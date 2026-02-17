@@ -14,7 +14,7 @@ const DesktopMenu:React.FC<DesktopMenuProps>=({ user, handleLogout, navigate, ge
                         <>
                             <button 
                                 onClick={() => navigate('/savedsummary')}
-                                className="text-gray-700 hover:text-blue-600 font-semibold dark:text-gray-300"
+                                className="text-gray-700 hover:text-brand-blue dark:text-gray-300 font-semibold"
                             >
                                 Saved Summaries
                             </button>
@@ -33,13 +33,13 @@ const DesktopMenu:React.FC<DesktopMenuProps>=({ user, handleLogout, navigate, ge
                         
                             <button 
                                 onClick={() => navigate('/login')}
-                                className="text-blue-600 hover:text-blue-700 font-semibold dark:text-gray-300"
+                                className="text-brand-blue dark:text-dark-brand-blue hover:text-brand-blue dark:hover:text-dark-brand-blue font-semibold"
                             >
                                 Login
                             </button>
                             <button 
                                 onClick={() => navigate('/signup')}
-                                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 font-semibold"
+                                className="bg-brand-blue dark:bg-dark-brand-blue text-white px-4 py-2 rounded hover:bg-brand-blue dark:hover:bg-dark-brand-blue font-semibold"
                             >
                                 Sign Up
                             </button>
