@@ -1,16 +1,16 @@
 import { createContext, useContext, useEffect, useState, useRef } from 'react';
-import { supabase} from "../lib/supabase.js";
+import { supabase } from "../lib/supabase.js";
 import type { User } from "../lib/supabase.js";
 import { useNavigate } from 'react-router-dom';
-
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 export const useAuth = () => useContext(AuthContext);
 
 interface AuthProviderProps {
-  children: React.ReactNode; 
+  children: React.ReactNode;
+}
 
-}interface AuthContextType {
+interface AuthContextType {
   signUp: (data: { email: string; password: string }) => Promise<any>;
   signIn: (data: { email: string; password: string }) => Promise<any>;
   signInWithGoogle: () => Promise<any>;
@@ -18,21 +18,21 @@ interface AuthProviderProps {
   user: User | null;
   resetTimer: () => void;
 }
+
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<User|null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const timeoutRef = useRef<number|null>(null);
+  const timeoutRef = useRef<number | null>(null);
   const navigate = useNavigate();
 
- 
-  const LOGOUT_TIME = 7200000; 
+  const LOGOUT_TIME = 7200000;
 
   const handleLogout = async () => {
     try {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
       await supabase.auth.signOut();
       setUser(null);
-      navigate('/login'); 
+      navigate('/login');
     } catch (error: any) {
       console.error("Error logging out:", error.message);
     }
@@ -44,28 +44,50 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   useEffect(() => {
-   
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      setLoading(false);
-      if (session?.user) resetTimer(); 
-    });
+    // Handle initial session and OAuth callback
+    const initializeAuth = async () => {
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error('Session error:', error);
+          setUser(null);
+          setLoading(false);
+          return;
+        }
 
-   
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        setUser(data.session?.user ?? null);
+        setLoading(false);
+        
+        if (data.session?.user) {
+          resetTimer();
+        }
+      } catch (error) {
+        console.error('Auth initialization error:', error);
+        setUser(null);
+        setLoading(false);
+      }
+    };
+
+    initializeAuth();
+
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('Auth event:', event); 
+      
       setUser(session?.user ?? null);
       setLoading(false);
-      if (session?.user) {
+      
+      if (event === 'SIGNED_IN' && session?.user) {
         resetTimer();
-      } else {
+      } else if (event === 'SIGNED_OUT') {
         if (timeoutRef.current) clearTimeout(timeoutRef.current);
       }
     });
 
-   
+    // Activity event listeners for auto-logout timer
     const events = ['mousedown', 'keydown', 'scroll', 'touchstart', 'mousemove'];
     
-   
     if (user) {
       events.forEach(event => window.addEventListener(event, resetTimer));
     }
@@ -75,7 +97,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
       events.forEach(event => window.removeEventListener(event, resetTimer));
     };
-  }, [user]); 
+  }, [user]);
 
   const value = {
     signUp: (data: { email: string; password: string }) => supabase.auth.signUp(data),
@@ -83,7 +105,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     signInWithGoogle: () => 
       supabase.auth.signInWithOAuth({
         provider: 'google',
-        options: { redirectTo: `${window.location.origin}/newsfeed` },
+        options: { 
+          redirectTo: import.meta.env.PROD 
+            ? 'https://news-summarizer-hazel.vercel.app/newsfeed'
+            : `${window.location.origin}/newsfeed`
+        },
       }),
     handleLogout,
     user,
