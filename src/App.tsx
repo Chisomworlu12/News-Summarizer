@@ -7,6 +7,8 @@ import NewsProvider from './context/NewsContext.js'
 import ForgotPassword from './pages/ForgotPassword.jsx'
 import ResetPassword from './pages/ResetPassword.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
+import Home from './pages/Home.js'
+
 
 
 function App() {
@@ -18,7 +20,8 @@ function App() {
 <AuthProvider>
     <NewsProvider>  
 <Routes>
-  <Route path="/" element={<NewsFeed />} />
+  <Route path="/" element={<Home />} />
+  <Route path="/newsfeed" element={<NewsFeed />} />
   <Route path="/login" element={<Login />} />
   <Route path="/signup" element={<Signup />} />
   <Route path="/savedsummary" element={<SavedSummary />} />
