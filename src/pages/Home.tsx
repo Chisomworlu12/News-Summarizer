@@ -6,6 +6,7 @@ import Hero from "../components/Home/Hero.js"
 import How from "../components/Home/How.js"
 import Navbar from "../components/Navbar/Navbar.js"
 import ScrollReveal from "../components/ScrollReveal.js"
+import CTASection from "../components/Home/CTASection.js"
 
 const Home = () => {
 
@@ -31,6 +32,9 @@ return(
         <div id="features">   
          <Features/>
         </div>
+    </ScrollReveal>
+    <ScrollReveal>
+    <CTASection/>
     </ScrollReveal>
     <ScrollReveal>
     <Footer/>
