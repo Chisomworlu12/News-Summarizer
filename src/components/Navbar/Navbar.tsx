@@ -10,6 +10,7 @@ const Navbar: React.FC<{ user: any; handleLogout: () => void }> = ({ user, handl
     const navigate = useNavigate()
     const location = useLocation()
     const [isMenuOpen, setIsMenuOpen] = useState(false)
+    
 
     const getDisplayName = (email:any) => {
         if (!email) return 'User';
@@ -36,12 +37,12 @@ const handleScroll = (e: React.MouseEvent, id: string) => {
   e.preventDefault();
   isMenuOpen && closeMenu();
   
-  const navbar = document.querySelector('nav'); // or use a ref
+  const navbar = document.querySelector('nav'); 
   const navbarHeight = navbar?.offsetHeight || 64;
   
   if (lenis) {
     lenis.scrollTo(`#${id}`, {
-      offset: -(navbarHeight + 24), // navbar height + 24px padding
+      offset: -(navbarHeight + 24), 
       duration: 1.5,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     });
@@ -54,8 +55,8 @@ const handleScroll = (e: React.MouseEvent, id: string) => {
     return(
         <nav className="sticky top-0 z-50 bg-white dark:bg-gray-800 shadow-md p-4">
             <div className="max-w-6xl mx-auto flex justify-between items-center">
-                <h1 className="text-2xl font-bold text-blue-600 dark:text-gray-300 hidden md:block">News Summarizer</h1>
-                <h1 className="text-2xl font-bold text-blue-600 dark:text-white md:hidden">NS</h1>
+                <h1 onClick={()=>navigate("/")} className=" cursor-pointer text-2xl font-bold text-blue-600 dark:text-gray-300 hidden md:block">News Summarizer</h1>
+                <h1 onClick={()=>navigate("/")} className="text-2xl font-bold text-blue-600 dark:text-white md:hidden">NS</h1>
                 {location.pathname === '/newsfeed' && <Search />}
                 <HamburgerIcon isOpen={isMenuOpen} toggleMenu={toggleMenu} />
                 {location.pathname === '/' &&<ul className="hidden md:flex gap-6">
@@ -69,7 +70,7 @@ const handleScroll = (e: React.MouseEvent, id: string) => {
 
             
             {isMenuOpen && (
-                <MobileMenu user={user} handleLogout={handleLogout} closeMenu={closeMenu} navigate={navigate} getDisplayName={getDisplayName} handleScroll={handleScroll}  />
+                <MobileMenu user={user} handleLogout={handleLogout} closeMenu={closeMenu} navigate={navigate} getDisplayName={getDisplayName} handleScroll={handleScroll} location={location} />
             )}
         </nav>
     )

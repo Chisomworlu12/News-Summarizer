@@ -7,9 +7,10 @@ interface MobileMenuProps{
     navigate: (path: string) => void;
     getDisplayName: (email: string|null) => string;
     handleScroll: (e: React.MouseEvent, feature: string) => void;
+    location: { pathname: string };
 }
 
-const MobileMenu:React.FC<MobileMenuProps> = ({ user, handleLogout, closeMenu, navigate, getDisplayName, handleScroll }) => {
+const MobileMenu:React.FC<MobileMenuProps> = ({ user, handleLogout, closeMenu, navigate, getDisplayName, handleScroll, location }) => {
     return (
        <div className="md:hidden mt-4 pb-4 border-t pt-4">
                     {user ? (
@@ -39,9 +40,9 @@ const MobileMenu:React.FC<MobileMenuProps> = ({ user, handleLogout, closeMenu, n
                     ) : (
                         <ul className="flex flex-col gap-3">
                             
-                            <li><a href="#how-it-works" onClick={(e) => handleScroll(e, 'how-it-works')} className="text-blue-600 dark:text-gray-300 hover:text-blue-800 dark:hover:text-gray-100 transition-colors">How it works</a></li>
+                            {location.pathname === '/' && <><li><a href="#how-it-works" onClick={(e) => handleScroll(e, 'how-it-works')} className="text-blue-600 dark:text-gray-300 hover:text-blue-800 dark:hover:text-gray-100 transition-colors">How it works</a></li>
                             <li><a href="#features" onClick={(e) => handleScroll(e, 'features')} className="text-blue-600 dark:text-gray-300 hover:text-blue-800 dark:hover:text-gray-100 transition-colors">Features</a></li>
-                        
+                        </>}
                             <button 
                                 onClick={() => {
                                     navigate('/login')

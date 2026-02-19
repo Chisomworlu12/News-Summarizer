@@ -1,11 +1,12 @@
 import { motion, type Variants } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import Button from "../Button.js";
 
 const Hero = () => {
   const sentence = "Stay Informed, Faster.";
   const navigate = useNavigate()
   
-  // Variants for the container (the H1)
+  // Variants for the container 
   const container = {
     hidden: { opacity: 0 },
     visible: (i = 1) => ({
@@ -68,9 +69,9 @@ const Hero = () => {
           No links to paste, no time wasted
         </p>
         <div className="flex justify-center">
-          <button onClick={()=> navigate("/newsfeed")} className="bg-brand-blue  hover:bg-brand-blue-light dark:bg-dark-brand-blue dark:hover:bg-dark-brand-blue-light text-gray-200 px-6 py-3 rounded-2xl transition duration-500 hover:scale-110 shadow-lg shadow-brand-blue/20">
+          <Button onClick={()=> navigate("/newsfeed")} className="bg-brand-blue  hover:bg-brand-blue-light dark:bg-dark-brand-blue dark:hover:bg-dark-brand-blue-light text-gray-200 px-6 py-3 rounded-2xl transition duration-500 hover:scale-110 shadow-lg shadow-brand-blue/20">
             Start Summarizing Free
-          </button>
+          </Button>
         </div>
       </motion.div>
     </div>
