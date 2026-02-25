@@ -91,7 +91,7 @@ Content production is often distorted by advertising models rather than user nee
 
 - **Context**: **AuthContext.jsx** (session management) and **NewsContext.jsx** (global data state).
 - **Hooks**: **useSummary.js**, **useSummaries.js**, **useSavedSummary.js**, and **useSlide.js**.
-- **Services**: **geminiService.js** (Google Gemini AI integration).
+- **Services**: **openAiService.js** (Open AI integration).
 - **Utils/Lib**: **rssParser.js** (XML logic) and **supabase.js** (Database client).
 - **Config**: **rssSources.js** (Source management).
 
@@ -105,10 +105,13 @@ news-summarizer/
 │   ├── context/           # Global State (AuthContext.jsx, NewsContext.jsx)
 │   ├── hooks/             # Custom logic (useSummary.js, useSummaries.js)
 │   ├── pages/             # App views (NewsFeed.jsx, Signup.jsx, Login.jsx)
-│   ├── services/          # API logic (geminiService.js)
+│   ├── services/          # API logic (openAiService.js)
 │   ├── utils/             # Helper functions (rssParser.js)
 │   ├── lib/               # Third-party config (supabase.js)
 │   └── App.jsx            # Main routing
+│   ├── features/
+│            ├── news/     # Redux Slices (newsSlice logic)
+│            ├── theme/    # Redux Slice   (themeSlice logic)
 ├── .env                   # Environment variables
 └── README.md              # Project documentation
 ```
@@ -148,6 +151,13 @@ npm run dev
 
 ---
 
+## 🏗️ System Architecture
+
+1. **Data Ingestion**: A custom ETL script parses high-authority RSS feeds and populates the Supabase PostgreSQL database.
+2. **State Management**: Redux Toolkit manages the global news state, allowing for complex filtering and instant UI updates without redundant API calls.
+3. **Secure AI Processing**: To protect API keys, summarization requests are sent to **Supabase Edge Functions**. This Deno-based environment securely communicates with the OpenAI API, keeping secrets server-side.
+4. **Rate Limiting**: Custom logic within the Edge Functions tracks user IDs to manage AI token consumption for both anonymous and authenticated users.
+
 ## 🎓 Lessons Learned
 
 Building **NewsSummarizer** provided deep insights into full-stack development, specifically regarding data integrity and the ethical use of AI.
@@ -162,11 +172,17 @@ With global authentication, news feeds, and AI usage tracking all happening at o
 
 ### 3. The Power of "Research-First" Engineering
 
-Starting with audience research into **News Fatigue** helped me prioritize features. Instead of just building another "News App," I focused on specific problems like "Information Standardization" and "Length Frustration," which led to the creation of the **Gemini AI** summarization integration.
+Starting with audience research into **News Fatigue** helped me prioritize features. Instead of just building another "News App," I focused on specific problems like "Information Standardization" and "Length Frustration," which led to the creation of the **Open AI** summarization integration.
 
 ### 4. UX & Security Balance
 
 Implementing a strict `signUp` to `signOut` flow taught me how to balance "out-of-the-box" library features (like Supabase's auto-login) with my own security requirements to ensure users intentionally agree to Terms of Service and verify their access.
+
+## 🎓 Lessons Learned
+
+- **Data Ownership:** Building my own RSS pipeline proved that data resiliency is more important than convenience.
+- **Security Architecture:** Learning to bridge Frontend (React) with Backend logic (Edge Functions) is essential for handling paid APIs like OpenAI.
+- **User Psychology:** Designing for "News Fatigue" taught me that sometimes, **less is more**. Features like "Summarize" provide more value than "infinite scrolling."
 
 ---
 
@@ -177,10 +193,11 @@ Implementing a strict `signUp` to `signOut` flow taught me how to balance "out-o
 
 ## 🛠️ Tech Stack Used
 
-- **Frontend:** React, Tailwind CSS, Vite
+- **Frontend:** React, Tailwind CSS, Vite, frramer motion
+- **State Management:** Redux Toolkit
 - **Backend/Database:** Supabase (PostgreSQL)
-- **AI Engine:** Google Gemini AI
-- **State/Auth:** React Context API
+- **Edge Logic:** Deno (Supabase Edge Functions)
+- **AI Engine:** OpenAI (GPT-4o-mini)
 - **Deployment:** Vercel
 
 ## 👤 Author

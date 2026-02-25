@@ -1,5 +1,5 @@
 import { useReducer, useEffect } from "react";
-import { summarizeArticle } from "../services/geminiService.js";
+import { summarizeArticle } from "../services/openAiService.js";
 import { useAuth } from "../context/AuthContext.js";
 
 const initialState = {
