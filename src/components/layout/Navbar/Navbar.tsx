@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom"
 import DesktopMenu from "./DesktopMenu.js";
 import MobileMenu from "./MobileMenu.js";
 import HamburgerIcon from "./HamburgerIcon.js";
-import Search from "../Search.js";
+import Search from "../../news/Search.js";
 import { useLenis } from "lenis/react";
 
 const Navbar: React.FC<{ user: any; handleLogout: () => void }> = ({ user, handleLogout }) => {

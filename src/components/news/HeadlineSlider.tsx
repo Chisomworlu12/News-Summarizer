@@ -1,4 +1,4 @@
-import useSlide from "../hooks/useSlide.js";
+import useSlide from "../../hooks/useSlide.js";
 
 interface HeadlineSliderProps{
   children: React.ReactNode[];

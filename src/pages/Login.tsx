@@ -43,8 +43,8 @@ function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center dark:bg-gray-800 justify-center">
-      <div className="bg-white dark:bg-gray-700 p-4 rounded-lg shadow-md w-96 my-2">
+    <div className="min-h-screen flex items-center dark:bg-gray-800 justify-center p-4">
+      <div className="bg-white dark:bg-gray-700 p-8 rounded-lg shadow-md w-full max-w-md my-2">
         <div className="text-center mb-4">
           <h1 className="text-2xl dark:text-gray-300 font-bold mb-2">
             <strong>Welcome back</strong>

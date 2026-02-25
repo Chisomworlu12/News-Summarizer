@@ -1,6 +1,6 @@
 import { motion, type Variants } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import Button from "../Button.js";
+import Button from "../ui/Button.js";
 
 const Hero = () => {
   const sentence = "Stay Informed, Faster.";
