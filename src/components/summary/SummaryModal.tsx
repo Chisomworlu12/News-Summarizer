@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useSavedSummary } from '../hooks/useSavedSummary.js';
+import { useSavedSummary } from '../../hooks/useSavedSummary.js';
 import { Bookmark, Check, ExternalLink, X } from 'lucide-react'; 
 
 interface SummaryModalProps {

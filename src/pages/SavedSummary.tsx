@@ -1,10 +1,10 @@
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar/Navbar.jsx';
-import { useAuth } from '../context/AuthContext.jsx';
+import Navbar from '../components/layout/Navbar/Navbar.js';
+import { useAuth } from '../context/AuthContext.js';
 import { useSummaries } from '../hooks/useSummaries.js';
-import SummaryCard from '../components/SummaryCard.jsx';
-import LoadingSpinner from '../components/Spinner.jsx';
-import Footer from '../components/Footer.jsx'
+import SummaryCard from '../components/summary/SummaryCard.js';
+import LoadingSpinner from '../components/ui/Spinner.js';
+import Footer from '../components/layout/Footer.js'
 
 function SavedSummaries() {
   const navigate = useNavigate();

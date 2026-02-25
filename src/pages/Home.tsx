@@ -1,11 +1,11 @@
 import ReactLenis from "lenis/react"
-import AmbientBackground from "../components/AmbientBackground.js"
-import Footer from "../components/Footer.js"
-import Features from "../components/Home/Fetures.js"
+import AmbientBackground from "../components/ui/AmbientBackground.js"
+import Footer from "../components/layout/Footer.js"
+import Features from "../components/Home/Features.js"
 import Hero from "../components/Home/Hero.js"
 import How from "../components/Home/How.js"
-import Navbar from "../components/Navbar/Navbar.js"
-import ScrollReveal from "../components/ScrollReveal.js"
+import Navbar from "../components/layout/Navbar/Navbar.js"
+import ScrollReveal from "../components/ui/ScrollReveal.js"
 import CTASection from "../components/Home/CTASection.js"
 
 const Home = () => {

@@ -1,4 +1,4 @@
-import ThemeToggle from "../ThemeToggle.js"
+import ThemeToggle from "../../ui/ThemeToggle.js"
 
 interface MobileMenuProps{
     user: any;
