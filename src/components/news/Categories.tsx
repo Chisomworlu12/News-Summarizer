@@ -4,11 +4,12 @@ const categories = ["general", "technology", "business", "sports", "politics"];
 interface CategoriesProps{
     setCategory: (category: string) => void;
     activeCategory: string;
+    
 } 
 const Categories:React.FC<CategoriesProps>=({setCategory, activeCategory })=> {
      
    const getActiveCategory= (category:string) => {
-        return category === activeCategory ? 'bg-gray-400/20 dark:bg-dark-brand-blue ' : 'bg-white text-brand-white dark:bg-gray-800 dark:text-dark-brand-blue hover:bg-gray-100 dark:hover:bg-gray-700';
+        return category === activeCategory ? 'bg-gray-400/20 dark:bg-dark-brand-blue scale-105' : 'bg-white text-brand-white dark:bg-gray-800 dark:text-dark-brand-blue hover:bg-gray-100 dark:hover:bg-gray-700';
     }
     
   
