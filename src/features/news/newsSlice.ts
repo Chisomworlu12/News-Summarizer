@@ -3,8 +3,6 @@ import { getArticles, getTopHeadlines, fetchAndStoreRSS } from '../../utils/rssP
 import { RSS_SOURCES } from '../../config/rssSources.js'
 import type { Article } from '../../utils/rssParser.js'
 
-// --- Thunks (replaces loadArticles and refreshRSSFeeds) ---
-
 export const loadArticles = createAsyncThunk(
   'news/loadArticles',
   async ({ category, searchTerm }: { category: string; searchTerm: string }) => {
@@ -26,7 +24,6 @@ export const refreshRSSFeeds = createAsyncThunk(
     const now = new Date()
     localStorage.setItem('lastRSSFetch', now.toISOString())
 
-    // After refresh, reload articles with current filters
     const state = getState() as any
     dispatch(loadArticles({ 
       category: state.news.category, 
@@ -36,8 +33,6 @@ export const refreshRSSFeeds = createAsyncThunk(
     return now.toISOString()
   }
 )
-
-// --- Slice ---
 
 interface NewsState {
   articles: Article[]
@@ -65,11 +60,15 @@ const newsSlice = createSlice({
   name: 'news',
   initialState,
   reducers: {
-    setCategory: (state, action) => { state.category = action.payload },
-    setSearchTerm: (state, action) => { state.searchTerm = action.payload },
+    setCategory: (state, action) => { 
+        state.category = action.payload;
+        state.loading = true; 
+    },
+    setSearchTerm: (state, action) => { 
+        state.searchTerm = action.payload; 
+    },
   },
   extraReducers: (builder) => {
-    // loadArticles
     builder
       .addCase(loadArticles.pending, (state) => { state.loading = true; state.error = null })
       .addCase(loadArticles.fulfilled, (state, action) => {
@@ -81,8 +80,6 @@ const newsSlice = createSlice({
         state.loading = false
         state.error = 'Failed to load articles'
       })
-
-    // refreshRSSFeeds
     builder
       .addCase(refreshRSSFeeds.pending, (state) => { state.isRefreshing = true })
       .addCase(refreshRSSFeeds.fulfilled, (state, action) => {
