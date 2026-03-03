@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
+import { memo } from "react";
 
-const ScrollReveal = ({ children }: { children: React.ReactNode }) => (
+const ScrollReveal = memo(({ children }: { children: React.ReactNode }) => (
   <motion.div
     initial={{ opacity: 0, y: 40 }}
     whileInView={{ opacity: 1, y: 0 }}
@@ -9,6 +10,8 @@ const ScrollReveal = ({ children }: { children: React.ReactNode }) => (
   >
     {children}
   </motion.div>
-);
+));
+
+ScrollReveal.displayName = "ScrollReveal";
 
 export default ScrollReveal;
