@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import Navbar from '../components/layout/Navbar/Navbar.js'
 import NewsCard from '../components/news/NewsCard.js'
 import { useSummary } from '../hooks/useSummary.js'
@@ -20,7 +20,7 @@ function NewsFeed() {
   const [displayCount, setDisplayCount] = useState<number>(9)
   const dispatch = useAppDispatch()
 
- const { articles, topHeadlines, category, searchTerm, loading, isRefreshing, lastFetchTime, error } = useAppSelector(state => state.news)
+  const { articles, topHeadlines, category, searchTerm, loading, isRefreshing, lastFetchTime, error } = useAppSelector(state => state.news)
 
   const { 
     summaryCount,
@@ -37,16 +37,38 @@ function NewsFeed() {
 
   const { user, handleLogout } = useAuth()
 
-  const validArticles = articles.filter(article => article.url_to_image)
-  const validHeadlines = topHeadlines.filter(article => article.url_to_image)
-  
-  const handleLoadMore = () => setDisplayCount(prev => prev + 3)
+
+  const validArticles = useMemo(
+    () => articles.filter(article => article.url_to_image),
+    [articles]
+  )
+
+  const validHeadlines = useMemo(
+    () => topHeadlines.filter(article => article.url_to_image),
+    [topHeadlines]
+  )
+
+  const displayedArticles = useMemo(
+    () => validArticles.slice(0, displayCount),
+    [validArticles, displayCount]
+  )
+
   const hasMore = displayCount < validArticles.length
 
-  const handleCategoryChange = (cat: string) => {
-      dispatch(setCategory(cat));
-      setDisplayCount(9); 
-      window.scrollTo({ top: 0, behavior: 'smooth' })}
+ 
+  const handleLoadMore = useCallback(() => {
+    setDisplayCount(prev => prev + 3)
+  }, [])
+
+  const handleCategoryChange = useCallback((cat: string) => {
+    dispatch(setCategory(cat))
+    setDisplayCount(9)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [dispatch])
+
+  const handleRefresh = useCallback(() => {
+    dispatch(refreshRSSFeeds())
+  }, [dispatch])
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900 dark:text-white transition-colors duration-300">
@@ -65,6 +87,7 @@ function NewsFeed() {
             <p className="mt-4 font-medium animate-pulse">Fetching {category} news...</p>
           </div>
         )}
+
         {!error && (
           <div className="max-w-6xl mx-auto px-8 pt-4">
             <div className="flex justify-between items-center mb-6 bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border dark:border-gray-700">
@@ -75,7 +98,7 @@ function NewsFeed() {
                   'Syncing feeds...'
                 )}
               </div>
-              <Button onClick={() => dispatch(refreshRSSFeeds())} disabled={isRefreshing} className="flex items-center gap-2">
+              <Button onClick={handleRefresh} disabled={isRefreshing} className="flex items-center gap-2">
                 {isRefreshing ? 'Updating...' : '🔄 Refresh'}
               </Button>
             </div>
@@ -119,7 +142,7 @@ function NewsFeed() {
               </h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {validArticles.slice(0, displayCount).map((article) => (
+                {displayedArticles.map((article) => (
                   <NewsCard 
                     key={article.url}  
                     article={article} 

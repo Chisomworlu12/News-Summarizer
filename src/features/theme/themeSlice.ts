@@ -6,6 +6,10 @@ const getInitialTheme = (): 'light' | 'dark' => {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 }
 
+const applyTheme = (theme: 'light' | 'dark') => {
+  document.documentElement.classList.toggle('dark', theme === 'dark')
+}
+
 const themeSlice = createSlice({
   name: 'theme',
   initialState: { value: getInitialTheme() },
@@ -13,10 +17,15 @@ const themeSlice = createSlice({
     toggleTheme: (state) => {
       state.value = state.value === 'light' ? 'dark' : 'light'
       localStorage.setItem('app-theme', state.value)
-      document.documentElement.classList.toggle('dark', state.value === 'dark')
+      applyTheme(state.value)
+    },
+    setTheme: (state, action) => {
+      state.value = action.payload
+      localStorage.setItem('app-theme', state.value)
+      applyTheme(state.value)
     }
   }
 })
 
-export const { toggleTheme } = themeSlice.actions
+export const { toggleTheme, setTheme } = themeSlice.actions
 export default themeSlice.reducer
