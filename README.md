@@ -1,4 +1,4 @@
-# 📰 NewsSummarizer
+# 📰 News Summarizer
 
 A modern, responsive news discovery platform engineered to solve News Fatigue and Information Overload. Built with React, Tailwind CSS, and Supabase, this app provides real-time news with AI-generated summaries to help users stay informed without the mental exhaustion of traditional media consumption.
 

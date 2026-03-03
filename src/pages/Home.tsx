@@ -12,11 +12,11 @@ const Home = () => {
 
 return(
      <ReactLenis root options={{ 
-      lerp: 0.05,
-      duration: 1.5,
-      smoothWheel: true,
-      wheelMultiplier: 0.8
-    }}>
+     lerp: 0.1,
+     duration: 1.2,
+     smoothWheel: false,
+     wheelMultiplier: 1
+   }}>
 <div className="relative min-h-screen">
 <div className="relative z-10 bg-gray-50 dark:bg-gray-800 min-h-full">
     <AmbientBackground/>
