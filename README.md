@@ -66,55 +66,68 @@ Content production is often distorted by advertising models rather than user nee
 **Challenge:** Supabase automatically logs users in upon signup, bypassing the intended "verification" step.
 **Solution:** I implemented an asynchronous `signOut` call immediately following `signUp`. This forces a manual login, ensuring the user confirms their credentials and intentionally agrees to the site's terms.
 
+### 🔄 Migration to TypeScript
+
+**Challenge:** As the codebase grew, JavaScript's lack of type safety led to runtime errors and harder-to-maintain code.
+**Solution:** Migrated the entire codebase to TypeScript, adding strict type definitions for components, Redux slices, API responses, and utility functions. This improved developer experience and caught bugs at compile time.
+
+## ✅ Test Coverage & CI/CD
+
+**Challenge:** Manual testing became unsustainable as features increased.
+**Solution:** Implemented Jest for unit and integration testing, covering critical flows like authentication, AI summarization, and state management. Set up a CI/CD pipeline to automatically run tests on every commit, ensuring code quality before deployment.
+
 ---
 
 ## 🏗️ Complete Project Structure
 
 ### 🧩 Reusable UI Components (`/components`)
 
-- **Navbar System**: Features **Navbar.jsx**, **DesktopMenu**, **MobileMenu**, and **HamburgerIcon** for a seamless responsive experience.
-- **NewsCard.jsx**: The primary article display component.
-- **SummaryCard.jsx**: Dedicated component for viewing saved AI summaries.
-- **HeadlineSlider.jsx**: Interactive carousel for featured news stories.
-- **Search.jsx**: Optimized search bar with debounced input.
-- **Modals**: **LimitModal.jsx** (for usage tracking) and **SummaryModal.jsx** (for AI content).
-- **UI Elements**: **Button.jsx**, **Categories.jsx**, **Footer.jsx**, **Form.jsx**, **Spinner.jsx**, **Error.jsx**, and **ThemeToggle.jsx**.
-- **Tracking**: **SummaryCount.jsx** to monitor real-time AI usage.
+- **Navbar System**: Features **Navbar.tsx**, **DesktopMenu**, **MobileMenu**
+- **NewsCard.tsx**: The primary article display component.
+- **SummaryCard.tsx**: Dedicated component for viewing saved AI summaries.
+- **HeadlineSlider.tsx**: Interactive carousel for featured news stories.
+- **Search.tsx**: Optimized search bar with debounced input.
+- **Modals**: **LimitModal.tsx** (for usage tracking) and **SummaryModal.tsx** (for AI content).
+- **UI Elements**: **Button.tsx**, **Categories.tsx**, **Footer.tsx**, **Spinner.tsx**, **Error.tsx**, and **ThemeToggle.tsx**.
+- **Tracking**: **SummaryCount.tsx** to monitor real-time AI usage.
 
 ### 📄 Application Pages (`/pages`)
 
-- **NewsFeed.jsx**: The main dashboard displaying the aggregated news.
-- **SavedSummary.jsx**: A private library for users to store and manage their AI summaries.
-- **Authentication**: **Login.jsx**, **Signup.jsx**, **ForgotPassword.jsx**, and **ResetPassword.jsx**.
+- **NewsFeed.tsx**: The main dashboard displaying the aggregated news.
+- **SavedSummary.tsx**: A private library for users to store and manage their AI summaries.
+- **Authentication**: **Login.tsx**, **Signup.tsx**, **ForgotPassword.tsx**, and **ResetPassword.tsx**.
 
 ### ⚙️ Core Logic & Services
 
-- **Context**: **AuthContext.jsx** (session management) and **NewsContext.jsx** (global data state).
-- **Hooks**: **useSummary.js**, **useSummaries.js**, **useSavedSummary.js**, and **useSlide.js**.
-- **Services**: **openAiService.js** (Open AI integration).
-- **Utils/Lib**: **rssParser.js** (XML logic) and **supabase.js** (Database client).
-- **Config**: **rssSources.js** (Source management).
+- **State Management**: Redux Toolkit with slices for news, theme, and summaries.
+- **Context**: **AuthContext.jsx** (session management)
+- **Hooks**: useSummary.ts, useSummaries.ts, useSavedSummary.ts, and useSlide.ts.
+- **Services**: openAiServices.ts (openAI integration).
+- **Utils/Lib**: rssParser.ts (XML logic) and supabase.ts (Database client).
+- **Config**: rssSources.ts (Source management).
+- **Testing**: Jest test suites for components, Redux slices, and API services.
 
 ## 🏗️ File Map
 
-```text
 news-summarizer/
-├── public/                # Research images (1.jpg, 2.jpg, 3.jpg, 4.jpg)
+├── public/ # Research images (1.jpg, 2.jpg, 3.jpg, 4.jpg)
 ├── src/
-│   ├── components/        # Reusable UI (NewsCard  .jsx, Search.jsx, Navbar)
-│   ├── context/           # Global State (AuthContext.jsx, NewsContext.jsx)
-│   ├── hooks/             # Custom logic (useSummary.js, useSummaries.js)
-│   ├── pages/             # App views (NewsFeed.jsx, Signup.jsx, Login.jsx)
-│   ├── services/          # API logic (openAiService.js)
-│   ├── utils/             # Helper functions (rssParser.js)
-│   ├── lib/               # Third-party config (supabase.js)
-│   └── App.jsx            # Main routing
-│   ├── features/
-│            ├── news/     # Redux Slices (newsSlice logic)
-│            ├── theme/    # Redux Slice   (themeSlice logic)
-├── .env                   # Environment variables
-└── README.md              # Project documentation
-```
+│ ├── components/ # Reusable UI (NewsCard.tsx, Search.tsx, Navbar)
+│ ├── features/ # Redux Toolkit slices
+│ │ ├── auth/ # Authentication state
+│ │ ├── news/ # News feed state
+│ │ └── theme/ # Theme state
+│ ├── hooks/ # Custom TypeScript hooks
+│ ├── pages/ # App views (NewsFeed.tsx, Signup.tsx, Login.tsx,Home.tsx, ResetPassword.tsx)
+│ ├── services/ # API logic (OpenAIServices.ts)
+│ ├── utils/ # Helper functions (rssParser.ts)
+│ ├── lib/ # Third-party config (supabase.ts)
+│ ├── types/ # TypeScript type definitions
+│ └── App.tsx # Main routing
+├── .github/
+│ └── workflows/ # CI/CD pipeline configuration
+├── .env # Environment variables
+└── README.md # Project documentation
 
 ---
 
@@ -157,6 +170,8 @@ npm run dev
 2. **State Management**: Redux Toolkit manages the global news state, allowing for complex filtering and instant UI updates without redundant API calls.
 3. **Secure AI Processing**: To protect API keys, summarization requests are sent to **Supabase Edge Functions**. This Deno-based environment securely communicates with the OpenAI API, keeping secrets server-side.
 4. **Rate Limiting**: Custom logic within the Edge Functions tracks user IDs to manage AI token consumption for both anonymous and authenticated users.
+5. **Type Safety**: Full TypeScript coverage ensures compile-time error detection and improved developer experience.
+6. **Automated Testing**: Jest test suites validate critical functionality, with CI/CD integration ensuring code quality on every commi
 
 ## 🎓 Lessons Learned
 
@@ -166,9 +181,9 @@ Building **NewsSummarizer** provided deep insights into full-stack development, 
 
 Relying on a third-party API for "live" data proved to be a single point of failure. Moving to a custom **ETL (Extract, Transform, Load)** pipeline taught me how to manage data ownership and ensure 100% uptime, even when external services are throttled or down.
 
-### 2. State Management Complexity
+## 2. Redux Toolkit for Complex State
 
-With global authentication, news feeds, and AI usage tracking all happening at once, I learned the importance of **React Context API** and **Custom Hooks**. Centralizing logic in hooks like `useSummary` and `useSummaries` kept the UI components clean and specialized.
+Migrating from Context API to Redux Toolkit dramatically improved state management for this app. With global authentication, news feeds, AI usage tracking, and theme preferences all happening simultaneously, Redux's predictable state container and DevTools made debugging and feature development significantly easier.
 
 ### 3. The Power of "Research-First" Engineering
 
@@ -177,6 +192,14 @@ Starting with audience research into **News Fatigue** helped me prioritize featu
 ### 4. UX & Security Balance
 
 Implementing a strict `signUp` to `signOut` flow taught me how to balance "out-of-the-box" library features (like Supabase's auto-login) with my own security requirements to ensure users intentionally agree to Terms of Service and verify their access.
+
+## 5. Automated Testing Saves Time
+
+Implementing Jest tests and CI/CD pipelines initially felt like overhead, but quickly proved invaluable. Catching bugs before deployment and having confidence in refactoring code significantly accelerated development velocity.
+
+## 6. TypeScript's Impact on Code Quality
+
+Converting the entire codebase to TypeScript eliminated an entire class of runtime bugs. Type definitions for Redux actions, API responses, and component props caught errors during development rather than in production, while improving IDE autocomplete and refactoring confidence.
 
 ## 🎓 Lessons Learned
 
@@ -199,6 +222,8 @@ Implementing a strict `signUp` to `signOut` flow taught me how to balance "out-o
 - **Edge Logic:** Deno (Supabase Edge Functions)
 - **AI Engine:** OpenAI (GPT-4o-mini)
 - **Deployment:** Vercel
+- **Testing:** Jest
+- **CI/CD:** GitHub Actions
 
 ## 👤 Author
 
