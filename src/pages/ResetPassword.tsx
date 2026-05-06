@@ -1,151 +1,120 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase.js'
 import { useNavigate } from 'react-router-dom'
-import { Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff, CheckCircle, KeyRound } from 'lucide-react'
 
 const ResetPassword = () => {
-  const [password, setPassword] = useState<string>('')
-  const [confirmPassword, setConfirmPassword] = useState<string>('')
-  const [message, setMessage] = useState<string>('')
-  const [loading, setLoading] = useState<boolean>(false)
-  const [showPassword, setShowPassword] = useState<boolean>(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false)
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [message, setMessage] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
+  const [success, setSuccess] = useState(false)
   const navigate = useNavigate()
 
-  
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === "PASSWORD_RECOVERY") {
-   
-        console.log("Ready to reset password")
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        // User is now in password recovery mode — form is ready
       }
     })
-
-    return () => {
-      subscription.unsubscribe()
-    }
+    return () => subscription.unsubscribe()
   }, [])
 
-  const handleResetPassword = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleReset = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    
-
-    if (password !== confirmPassword) {
-      setMessage('Error: Passwords do not match')
-      return
-    }
-
-    // Validate password length
-    if (password.length < 6) {
-      setMessage('Error: Password must be at least 6 characters')
-      return
-    }
+    if (password !== confirmPassword) { setMessage('Passwords do not match'); return }
+    if (password.length < 6) { setMessage('Password must be at least 6 characters'); return }
 
     setLoading(true)
     setMessage('')
 
-    // Update the password
-    const { error } = await supabase.auth.updateUser({
-      password: password
-    })
-
+    const { error } = await supabase.auth.updateUser({ password })
     if (error) {
-      setMessage('Error: ' + error.message)
+      setMessage(error.message)
     } else {
-      setMessage('Success! Your password has been reset.')
-      setTimeout(() => {
-        navigate('/login')
-      }, 2000)
+      setSuccess(true)
+      setTimeout(() => navigate('/login'), 2500)
     }
-    
     setLoading(false)
   }
 
   return (
-    <div className="min-h-screen dark:bg-gray-800 flex items-center justify-center">
-      <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md w-96">
-        <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold mb-2 dark:text-gray-300">Reset Password</h1>
-          <p className="text-gray-600 text-sm dark:text-gray-400">Enter your new password</p>
+    <div className="min-h-screen bg-auth-gradient flex items-center justify-center p-4">
+      <div className="fixed bottom-0 right-0 w-80 h-80 bg-brand-blue/20 rounded-full blur-3xl translate-x-1/3 translate-y-1/3 pointer-events-none" />
+
+      <div className="relative w-full max-w-sm">
+        <div className="bg-white/10 backdrop-blur-2xl border border-white/20 rounded-3xl p-8 shadow-2xl">
+          {success ? (
+            <div className="text-center">
+              <div className="w-16 h-16 rounded-2xl bg-brand-green/20 border border-brand-green/30 flex items-center justify-center mx-auto mb-5">
+                <CheckCircle size={32} className="text-brand-green" />
+              </div>
+              <h1 className="text-2xl font-black text-white mb-2">Password reset!</h1>
+              <p className="text-white/60 text-sm">Redirecting you to login…</p>
+            </div>
+          ) : (
+            <>
+              <div className="text-center mb-8">
+                <div className="w-14 h-14 rounded-2xl bg-brand-indigo/20 border border-brand-indigo/30 flex items-center justify-center mx-auto mb-4">
+                  <KeyRound size={26} className="text-brand-purple-light" />
+                </div>
+                <h1 className="text-2xl font-black text-white mb-2">New password</h1>
+                <p className="text-white/60 text-sm">Choose a strong password for your account.</p>
+              </div>
+
+              <form onSubmit={handleReset} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-white/80 mb-1.5">New Password</label>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? 'text' : 'password'} placeholder="Min. 6 characters"
+                      value={password} onChange={(e) => setPassword(e.target.value)} required
+                      className="w-full px-4 py-3 pr-11 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/30 text-sm focus:outline-none focus:border-brand-purple-light transition-all"
+                    />
+                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70">
+                      {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-white/80 mb-1.5">Confirm Password</label>
+                  <div className="relative">
+                    <input
+                      type={showConfirm ? 'text' : 'password'} placeholder="••••••••"
+                      value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required
+                      className="w-full px-4 py-3 pr-11 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/30 text-sm focus:outline-none focus:border-brand-purple-light transition-all"
+                    />
+                    <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70">
+                      {showConfirm ? <Eye size={18} /> : <EyeOff size={18} />}
+                    </button>
+                  </div>
+                </div>
+
+                <button
+                  type="submit" disabled={loading}
+                  className="w-full py-3 rounded-xl font-bold text-sm text-white bg-linear-to-r from-brand-purple to-brand-indigo hover:from-brand-purple-light hover:to-brand-indigo shadow-lg shadow-brand-purple/40 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {loading ? 'Resetting…' : 'Reset Password'}
+                </button>
+              </form>
+
+              {message && (
+                <div className="mt-4 p-3 rounded-xl text-center text-sm bg-red-500/20 border border-red-500/30 text-red-200">
+                  {message}
+                </div>
+              )}
+
+              <p className="text-center mt-5 text-sm">
+                <span onClick={() => navigate('/login')} className="text-white/50 hover:text-white cursor-pointer transition-colors text-sm">
+                  ← Back to Login
+                </span>
+              </p>
+            </>
+          )}
         </div>
-
-        <form onSubmit={handleResetPassword}>
-         
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
-              New Password
-            </label>
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="Enter new password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full py-3 px-4 border border-gray-300 rounded-md text-sm transition-colors focus:outline-none focus:border-indigo-500 dark:text-gray-300"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-              >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-              </button>
-            </div>
-            <p className="text-xs text-gray-500 mt-1">Minimum 6 characters</p>
-          </div>
-
-         
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
-              Confirm Password
-            </label>
-            <div className="relative">
-              <input
-                type={showConfirmPassword ? "text" : "password"}
-                placeholder="Confirm new password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full py-3 px-4 border border-gray-300 rounded-md text-sm transition-colors focus:outline-none focus:border-indigo-500 dark:text-gray-300"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-              >
-                {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-              </button>
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-             className="bg-linear-to-br from-brand-blue to-dark-brand-blue dark:from-brand-blue dark:to-dark-brand-blue text-white border-none py-3.5 px-8 rounded-lg text-base font-semibold cursor-pointer transition-all duration-200 w-full hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-300 dark:hover:shadow-indigo-800 mb-4 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? 'Resetting...' : 'Reset Password'}
-          </button>
-        </form>
-
-        {message && (
-          <div className={`mt-4 p-3 rounded text-center text-sm ${
-            message.includes('Error') 
-              ? 'bg-red-50 text-red-600' 
-              : 'bg-green-50 text-green-600'
-          }`}>
-            {message}
-          </div>
-        )}
-
-        <p className="text-center text-sm text-gray-600 mt-4">
-          <span 
-            onClick={() => navigate('/login')} 
-            className="text-brand-blue dark:text-dark-brand-blue cursor-pointer hover:underline"
-          >
-            Back to Login
-          </span>
-        </p>
       </div>
     </div>
   )

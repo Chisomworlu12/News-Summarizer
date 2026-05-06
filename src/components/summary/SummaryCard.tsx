@@ -1,96 +1,96 @@
-import { useState } from 'react';
-import { Trash2, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
+import { useState } from 'react'
+import { Trash2, ExternalLink, ChevronDown, ChevronUp, Sparkles } from 'lucide-react'
 
 interface SummaryCardProps {
   item: {
-    id: string;
-    article_title: string;
-    article_description?: string;
-    summary: string;
-    article_url: string;
-    saved_at: string;
-  };
-  handleDelete: (id: string) => void;
+    id: string
+    article_title: string
+    article_description?: string
+    summary: string
+    article_url: string
+    saved_at: string
+  }
+  handleDelete: (id: string) => void
 }
 
-const SummaryCard:React.FC<SummaryCardProps>=({ item, handleDelete }) =>{
-  const [isExpanded, setIsExpanded] = useState(false);
+const SummaryCard: React.FC<SummaryCardProps> = ({ item, handleDelete }) => {
+  const [isExpanded, setIsExpanded] = useState(false)
 
- 
-  const characterLimit = 180;
-  const text = item.summary || "";
-  const isLong = text.length > characterLimit;
-
-  
-  const displayContent = isExpanded 
-    ? text 
-    : `${text.substring(0, characterLimit)}...`;
+  const allPoints = (item.summary || '')
+    .split('\n')
+    .map((line: string) => line.replace(/^[\s•\-\*\d+\.\)]+/, '').trim())
+    .filter(Boolean)
+  const PREVIEW = 3
+  const points = isExpanded ? allPoints : allPoints.slice(0, PREVIEW)
+  const isLong = allPoints.length > PREVIEW
 
   return (
-    <div className="bg-white dark:bg-gray-700 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    <div className="group bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-200/60 dark:border-white/5 hover:border-brand-purple/20 hover:shadow-lg hover:shadow-brand-purple/5 transition-all duration-300 overflow-hidden">
+      {/* Gradient top accent */}
+      <div className="h-1 bg-linear-to-r from-brand-purple via-brand-indigo to-brand-blue" />
+
       <div className="p-6">
-        
-        <div className="flex justify-between items-start mb-4">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-300 leading-tight flex-1 pr-4">
+        {/* Title row */}
+        <div className="flex justify-between items-start gap-4 mb-3">
+          <h2 className="text-base font-bold text-slate-900 dark:text-white leading-snug flex-1 line-clamp-2">
             {item.article_title}
           </h2>
           <button
             onClick={() => handleDelete(item.id)}
-            className="text-gray-400 hover:text-red-600 p-1 transition-colors"
-            title="Delete saved summary"
+            className="text-slate-300 dark:text-slate-600 hover:text-red-500 dark:hover:text-red-400 p-1 rounded-lg transition-colors shrink-0"
+            title="Delete"
           >
-            <Trash2 size={20} />
+            <Trash2 size={16} />
           </button>
         </div>
 
-       
         {item.article_description && (
-          <p className="text-gray-500 text-sm mb-4 line-clamp-1 italic dark:text-gray-400">
+          <p className="text-slate-400 dark:text-slate-500 text-xs mb-4 line-clamp-1 italic">
             {item.article_description}
           </p>
         )}
 
-        
-        <div className="bg-blue-50 border-l-4 border-brand-blue dark:border-dark-brand-blue p-4 rounded-r-lg">
-          <h3 className="text-xs font-bold text-brand-blue dark:text-dark-brand-blue uppercase tracking-wider mb-2">
-            AI Summary
-          </h3>
-          <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-            {isLong ? displayContent : text}
-          </p>
-
-        
+        {/* Summary block */}
+        <div className="bg-brand-purple/5 dark:bg-brand-purple/10 rounded-xl p-4 border border-brand-purple/10">
+          <div className="flex items-center gap-1.5 mb-2">
+            <Sparkles size={12} className="text-brand-purple" />
+            <span className="text-xs font-bold text-brand-purple uppercase tracking-wider">AI Summary</span>
+          </div>
+          <ul className="space-y-2.5">
+            {points.map((point: string, i: number) => (
+              <li key={i} className="flex items-start gap-2.5 text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-linear-to-br from-brand-purple to-brand-indigo shrink-0" />
+                {point}
+              </li>
+            ))}
+          </ul>
           {isLong && (
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="mt-3 flex items-center gap-1 text-brand-blue dark:text-dark-brand-blue font-bold text-sm hover:text-brand-blue-light dark:hover:text-dark-brand-blue-light transition-colors"
+              className="mt-3 flex items-center gap-1 text-brand-indigo dark:text-brand-purple-light font-semibold text-xs hover:text-brand-purple transition-colors"
             >
-              {isExpanded ? (
-                <><ChevronUp size={16} /> Show Less</>
-              ) : (
-                <><ChevronDown size={16} /> View More</>
-              )}
+              {isExpanded ? <><ChevronUp size={14} /> Show Less</> : <><ChevronDown size={14} /> Read More</>}
             </button>
           )}
         </div>
 
-        
-        <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center text-xs">
-          <span className="text-gray-400 dark:text-gray-300">
-            Saved on {new Date(item.saved_at).toLocaleDateString()}
+        {/* Footer */}
+        <div className="mt-4 pt-4 border-t border-slate-100 dark:border-white/5 flex justify-between items-center text-xs">
+          <span className="text-slate-400 dark:text-slate-500">
+            {new Date(item.saved_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
           </span>
           <a
             href={item.article_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1 text-brand-blue dark:text-dark-brand-blue font-semibold hover:underline"
+            className="flex items-center gap-1 text-brand-indigo dark:text-brand-purple-light font-semibold hover:text-brand-purple transition-colors"
           >
-            Original Source <ExternalLink size={12} />
+            Source <ExternalLink size={11} />
           </a>
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default SummaryCard;
+export default SummaryCard

@@ -1,113 +1,106 @@
 import { useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Mail, CheckCircle } from 'lucide-react'
 
 function ForgotPassword() {
-  const [email, setEmail] = useState<string>('')
-  const [message, setMessage] = useState<string>('')
-  const [loading, setLoading] = useState<boolean>(false)
-  const [emailSent, setEmailSent] = useState<boolean>(false)
+  const [email, setEmail] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [emailSent, setEmailSent] = useState(false)
+  const [errorMsg, setErrorMsg] = useState('')
   const navigate = useNavigate()
 
-  const handleResetPassword = async (e: React.FormEvent) => {
+  const handleReset = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    setMessage('')
+    setErrorMsg('')
 
-   
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,  
+      redirectTo: `${window.location.origin}/reset-password`,
     })
 
     if (error) {
-      setMessage('Error: ' + error.message)
+      setErrorMsg(error.message)
     } else {
       setEmailSent(true)
-      setMessage('Check your email! We sent you a password reset link.')
     }
-    
     setLoading(false)
   }
 
   return (
-    <div className="min-h-screen dark:bg-gray-800 flex items-center justify-center">
-      <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md w-96">
+    <div className="min-h-screen bg-auth-gradient flex items-center justify-center p-4">
+      <div className="fixed top-0 left-0 w-80 h-80 bg-brand-indigo/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+
+      <div className="relative w-full max-w-sm">
         <button
           onClick={() => navigate('/login')}
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-800 dark:hover:text-gray-300 mb-4 dark:text-gray-300"
+          className="flex items-center gap-1.5 text-white/60 hover:text-white text-sm font-medium mb-6 transition-colors"
         >
-          <ArrowLeft size={20} />
-          <span>Back to Login</span>
+          <ArrowLeft size={16} /> Back to login
         </button>
 
-        <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold mb-2 dark:text-gray-300">Forgot Password?</h1>
-          <p className="text-gray-600 text-sm dark:text-gray-400">
-            {emailSent 
-              ? "Check your inbox for the reset link" 
-              : "Enter your email and we'll send you a reset link"}
-          </p>
+        <div className="bg-white/10 backdrop-blur-2xl border border-white/20 rounded-3xl p-8 shadow-2xl">
+          {emailSent ? (
+            <div className="text-center">
+              <div className="w-16 h-16 rounded-2xl bg-brand-green/20 border border-brand-green/30 flex items-center justify-center mx-auto mb-5">
+                <CheckCircle size={32} className="text-brand-green" />
+              </div>
+              <h1 className="text-2xl font-black text-white mb-2">Check your inbox</h1>
+              <p className="text-white/60 text-sm mb-6 leading-relaxed">
+                We sent a password reset link to <strong className="text-white">{email}</strong>. Check your spam folder too.
+              </p>
+              <button
+                onClick={() => navigate('/login')}
+                className="w-full py-3 rounded-xl font-bold text-sm text-white bg-linear-to-r from-brand-purple to-brand-indigo shadow-lg hover:-translate-y-0.5 transition-all"
+              >
+                Return to Login
+              </button>
+            </div>
+          ) : (
+            <>
+              <div className="text-center mb-8">
+                <div className="w-14 h-14 rounded-2xl bg-brand-purple/20 border border-brand-purple/30 flex items-center justify-center mx-auto mb-4">
+                  <Mail size={26} className="text-brand-purple-light" />
+                </div>
+                <h1 className="text-2xl font-black text-white mb-2">Forgot password?</h1>
+                <p className="text-white/60 text-sm">
+                  Enter your email and we'll send you a reset link.
+                </p>
+              </div>
+
+              <form onSubmit={handleReset} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-white/80 mb-1.5">Email</label>
+                  <input
+                    type="email" placeholder="you@example.com" value={email}
+                    onChange={(e) => setEmail(e.target.value)} required
+                    className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/30 text-sm focus:outline-none focus:border-brand-purple-light transition-all"
+                  />
+                </div>
+
+                <button
+                  type="submit" disabled={loading}
+                  className="w-full py-3 rounded-xl font-bold text-sm text-white bg-linear-to-r from-brand-purple to-brand-indigo hover:from-brand-purple-light hover:to-brand-indigo shadow-lg shadow-brand-purple/40 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {loading ? 'Sending…' : 'Send Reset Link'}
+                </button>
+              </form>
+
+              {errorMsg && (
+                <div className="mt-4 p-3 rounded-xl text-center text-sm bg-red-500/20 border border-red-500/30 text-red-200">
+                  {errorMsg}
+                </div>
+              )}
+
+              <p className="text-center mt-5 text-sm text-white/50">
+                Remember it?{' '}
+                <span onClick={() => navigate('/login')} className="text-white font-bold cursor-pointer hover:text-brand-purple-light transition-colors">
+                  Log in
+                </span>
+              </p>
+            </>
+          )}
         </div>
-
-        {!emailSent ? (
-          <form onSubmit={handleResetPassword}>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
-                Email Address
-              </label>
-              <input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full py-3 px-4 border border-gray-300 rounded-md text-sm dark:text-gray-300 transition-colors focus:outline-none focus:border-indigo-500 "
-                required
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="bg-linear-to-br from-indigo-500 to-purple-600 dark:from-indigo-500 dark:to-purple-600 text-white border-none py-3.5 px-8 rounded-lg text-base font-semibold cursor-pointer transition-all duration-200 w-full hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-300 dark:hover:shadow-indigo-800 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? 'Sending...' : 'Send Reset Link'}
-            </button>
-          </form>
-        ) : (
-          <div className="text-center">
-            <div className="bg-green-50 text-green-600 p-4 rounded-lg mb-4">
-              <p className="font-medium">✓ Email Sent!</p>
-              <p className="text-sm mt-1">Check your inbox and spam folder</p>
-            </div>
-            <button
-              onClick={() => navigate('/login')}
-              className="text-indigo-500 hover:text-indigo-700 text-sm"
-            >
-              Return to Login
-            </button>
-          </div>
-        )}
-
-        {message && !emailSent && (
-          <div className={`mt-4 p-3 rounded text-center text-sm ${
-            message.includes('Error') 
-              ? 'bg-red-50 text-red-600' 
-              : 'bg-green-50 text-green-600'
-          }`}>
-            {message}
-          </div>
-        )}
-
-        <p className="text-center text-sm dark:text-gray-300 text-gray-600 mt-4">
-          Remember your password?
-          <span 
-            onClick={() => navigate('/login')} 
-            className="text-indigo-500 dark:text-indigo-400 cursor-pointer hover:underline"
-          >
-            Log in
-          </span>
-        </p>
       </div>
     </div>
   )

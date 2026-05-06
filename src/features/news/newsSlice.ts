@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { getArticles, getTopHeadlines, fetchAndStoreRSS } from '../../utils/rssParser'
-import { RSS_SOURCES } from '../../config/rssSources.js'
+import { RSS_SOURCES } from '../../lib/rssSources.js'
 import type { Article } from '../../utils/rssParser.js'
 
 export const loadArticles = createAsyncThunk(

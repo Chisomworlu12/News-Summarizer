@@ -5,6 +5,7 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "target": "esnext",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "strict": true,
     "jsx": "react-jsx",
     "isolatedModules": true,
@@ -13,5 +14,6 @@
     "paths": {
       "@/*": ["./src/*"]
     }
-  }
+  },
+  "include": ["src", "src/**/*.d.ts"]
 }

@@ -3,50 +3,82 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-brand-blue: #6477f2;
-  --color-brand-blue-light: #7e8df5;
-  --color-brand-green: #10b981;
-  --color-brand-purple: #a855f7;
-  --color-dark-brand-blue: #818cf8;
+  /* Core brand palette */
+  --color-brand-purple:       #8b5cf6;
+  --color-brand-purple-light: #a78bfa;
+  --color-brand-indigo:       #6366f1;
+  --color-brand-blue:         #3b82f6;
+  --color-brand-blue-light:   #60a5fa;
+  --color-brand-pink:         #ec4899;
+  --color-brand-rose:         #f43f5e;
+  --color-brand-cyan:         #06b6d4;
+  --color-brand-green:        #10b981;
+
+  /* Dark-mode variant aliases kept for backward compat */
+  --color-dark-brand-blue:       #818cf8;
   --color-dark-brand-blue-light: #9ea5f9;
-  --background-image-light-radial: radial-gradient(
-    ellipse at center,
-    #162d6e 0%,
-    #0a1540 100%
-  );
-  --background-image-dark-radial: radial-gradient(
-    ellipse at center,
-    #1e2a4a 0%,
-    #0d1117 100%
-  );
+
+  /* Named gradients used via bg-* utilities */
+  --background-image-hero-gradient: linear-gradient(135deg, #4c1d95 0%, #1e1b4b 50%, #0f172a 100%);
+  --background-image-auth-gradient: linear-gradient(135deg, #2e1065 0%, #1e1b4b 45%, #0f0c2e 100%);
+  --background-image-dark-radial:  radial-gradient(ellipse at 30% 40%, #312e81 0%, #0f172a 100%);
+  --background-image-light-radial: radial-gradient(ellipse at 30% 40%, #ede9fe 0%, #f8fafc 100%);
+  --background-image-card-gradient: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #3b82f6 100%);
 }
 
-li {
-  @apply text-left dark:text-gray-200 text-blue-600 hover:transform hover:scale-105 transition duration-500 px-4 py-2 rounded font-semibold;
-}
-.features {
-  @apply text-center flex flex-col items-center text-gray-700 dark:text-gray-300;
-}
-.feature-title {
-  @apply text-xl font-bold mb-4;
-}
-.feature-icon {
-  @apply rounded-2xl w-13 h-13 flex items-center justify-center mb-2 mx-auto;
-}
-
+/* ── Lenis smooth scroll ────────────────────────────────── */
 html.lenis,
 html.lenis body {
   height: auto;
 }
-
 .lenis.lenis-smooth {
   scroll-behavior: auto !important;
 }
-
 .lenis.lenis-smooth [data-lenis-prevent] {
   overscroll-behavior: contain;
 }
-
 .lenis.lenis-stopped {
   overflow: hidden;
+}
+
+/* ── Gradient text helper ───────────────────────────────── */
+.gradient-text {
+  background-image: linear-gradient(135deg, #8b5cf6, #6366f1, #3b82f6, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Glassmorphism helpers ──────────────────────────────── */
+.glass {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+.glass-card {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+.dark .glass-card {
+  background: rgba(15, 10, 40, 0.7);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+/* ── Feature grid shared styles ────────────────────────── */
+.features {
+  @apply text-center flex flex-col items-center text-slate-700 dark:text-slate-300;
+}
+.feature-title {
+  @apply text-xl font-bold mb-3;
+}
+.feature-icon {
+  @apply rounded-2xl w-14 h-14 flex items-center justify-center mb-3 mx-auto;
+}
+
+/* ── Global nav-link override (used in mobile menu) ─────── */
+li a {
+  @apply text-left dark:text-slate-300 text-brand-indigo hover:text-brand-purple dark:hover:text-brand-purple-light font-semibold transition-colors duration-200;
 }

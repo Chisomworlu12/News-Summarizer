@@ -1,5 +1,5 @@
 import { useReducer, useEffect } from "react";
-import { summarizeArticle } from "../services/openAiServcies";
+import { summarizeArticle } from "../services/openAiServices.js";
 import { useAuth } from "../context/AuthContext.js";
 
 const initialState = {

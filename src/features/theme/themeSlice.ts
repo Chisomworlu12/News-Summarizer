@@ -25,6 +25,7 @@ const themeSlice = createSlice({
       applyTheme(state.value)
     }
   }
+  
 })
 
 export const { toggleTheme, setTheme } = themeSlice.actions
