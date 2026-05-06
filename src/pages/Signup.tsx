@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { Eye, EyeOff, ArrowLeft } from 'lucide-react'
 import { useAuth } from '../context/AuthContext.js'
 
@@ -151,9 +151,9 @@ function Signup() {
               />
               <label htmlFor="terms" className="text-xs text-white/50 leading-relaxed">
                 I agree to the{' '}
-                <a href="#" className="text-white/80 underline hover:text-white">Terms</a>
+                <Link to="/terms" className="text-white/80 underline hover:text-white">Terms</Link>
                 {' '}and{' '}
-                <a href="#" className="text-white/80 underline hover:text-white">Privacy Policy</a>
+                <Link to="/privacy" className="text-white/80 underline hover:text-white">Privacy Policy</Link>
               </label>
             </div>
             {fieldErrors.checkbox && <p className="text-red-300 text-xs">{fieldErrors.checkbox}</p>}

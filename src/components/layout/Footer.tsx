@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 const Footer = () => {
   return (
     <footer className="w-full py-10 mt-8 border-t border-slate-200/60 dark:border-white/5 bg-white/80 dark:bg-slate-950/80 backdrop-blur-sm transition-colors duration-300">
@@ -17,6 +19,12 @@ const Footer = () => {
         </p>
 
         <div className="flex gap-5 text-slate-500 dark:text-slate-500">
+          <Link to="/terms" className="hover:text-brand-purple transition-colors font-medium">
+            Terms
+          </Link>
+          <Link to="/privacy" className="hover:text-brand-purple transition-colors font-medium">
+            Privacy
+          </Link>
           <a href="https://github.com/Chisomworlu12" target="_blank" rel="noopener noreferrer"
             className="hover:text-brand-purple transition-colors font-medium">
             GitHub

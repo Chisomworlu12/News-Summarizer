@@ -54,7 +54,11 @@ const Navbar: React.FC = () => {
           NS
         </h1>
 
-        {location.pathname === '/newsfeed' && <Search />}
+        {location.pathname === '/newsfeed' && (
+          <div className="flex-1 mx-3 md:flex-none md:mx-0">
+            <Search />
+          </div>
+        )}
 
         <button
           onClick={toggleMenu}
